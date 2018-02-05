@@ -60,7 +60,7 @@ public class ItemController {
 
 		// protect
 		item.setLineNum(0);
-		item.setId(0);
+		item.setId(0L);
 		String userId = userInfoHolder.getUser().getUserId();
 		item.setDataChangeCreatedBy(userId);
 		item.setDataChangeLastModifiedBy(userId);

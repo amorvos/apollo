@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.adminservice.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -304,7 +305,7 @@ public class InstanceConfigControllerTest {
 	}
 
 	private void verifyInstance(Instance instance, InstanceDTO instanceDTO) {
-		assertEquals(instance.getId(), instanceDTO.getId());
+		assertTrue(instance.getId() == instanceDTO.getId());
 		assertEquals(instance.getAppId(), instanceDTO.getAppId());
 		assertEquals(instance.getClusterName(), instanceDTO.getClusterName());
 		assertEquals(instance.getDataCenter(), instanceDTO.getDataCenter());

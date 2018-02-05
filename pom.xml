@@ -90,19 +90,19 @@
         <!-- for travis usage -->
         <github.global.server>github</github.global.server>
         <lombok.version>1.16.8</lombok.version>
+        <commons-collections4.version>4.1</commons-collections4.version>
     </properties>
 
     <modules>
-        <module>apollo-buildtools</module>
+        <module>apollo-config-service</module>
+        <module>apollo-admin-service</module>
+        <module>apollo-portal</module>
         <module>apollo-core</module>
         <module>apollo-client</module>
         <module>apollo-common</module>
         <module>apollo-biz</module>
-        <module>apollo-configservice</module>
-        <module>apollo-adminservice</module>
-        <module>apollo-portal</module>
-        <module>apollo-assembly</module>
         <module>apollo-demo</module>
+        <module>apollo-build-tools</module>
     </modules>
 
     <dependencyManagement>
@@ -124,7 +124,7 @@
             </dependency>
             <dependency>
                 <groupId>com.ctrip.framework.apollo</groupId>
-                <artifactId>apollo-buildtools</artifactId>
+                <artifactId>apollo-build-tools</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -181,6 +181,11 @@
                         <artifactId>persistence-api</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${commons-collections4.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.ctrip.framework.clogging</groupId>

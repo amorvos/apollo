@@ -48,7 +48,7 @@ public class ItemController {
 
 		// protect
 		toCreate.setLineNum(0);
-		toCreate.setId(0);
+		toCreate.setId(0L);
 		toCreate.setDataChangeLastModifiedBy(toCreate.getDataChangeCreatedBy());
 		toCreate.setDataChangeLastModifiedTime(null);
 		toCreate.setDataChangeCreatedTime(null);

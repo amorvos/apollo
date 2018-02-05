@@ -2,6 +2,7 @@ package com.ctrip.framework.apollo.common.dto;
 
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Pageable;
 
 import lombok.Getter;
@@ -26,5 +27,9 @@ public class PageDTO<T> {
 		this.content = content;
 		this.page = pageable.getPageNumber();
 		this.size = pageable.getPageSize();
+	}
+
+	public boolean hasContent() {
+		return CollectionUtils.isNotEmpty(content);
 	}
 }

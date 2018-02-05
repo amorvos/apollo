@@ -39,7 +39,18 @@ public class GrayReleaseRuleItemDTO {
 
 	@Override
 	public int hashCode() {
-
 		return Objects.hash(clientIpList, clientAppId);
+	}
+
+	public boolean matches(String clientAppId, String clientIp) {
+		return appIdMatches(clientAppId) && ipMatches(clientIp);
+	}
+
+	private boolean appIdMatches(String clientAppId) {
+		return this.clientAppId.equals(clientAppId);
+	}
+
+	private boolean ipMatches(String clientIp) {
+		return this.clientIpList.contains(ALL_IP) || clientIpList.contains(clientIp);
 	}
 }

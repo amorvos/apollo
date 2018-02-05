@@ -14,10 +14,12 @@ import org.springframework.stereotype.Component;
 @RefreshScope
 @Component("annotatedBean")
 public class AnnotatedBean {
+
 	private static final Logger logger = LoggerFactory.getLogger(AnnotatedBean.class);
 
 	@Value("${timeout:200}")
 	private int timeout;
+
 	private int batch;
 
 	@PostConstruct

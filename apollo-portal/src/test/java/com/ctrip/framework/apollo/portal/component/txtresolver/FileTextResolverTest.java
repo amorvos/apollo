@@ -35,7 +35,7 @@ public class FileTextResolverTest extends AbstractUnitTest {
 	@Test
 	public void testUpdateItem() {
 		ItemDTO existedItem = new ItemDTO();
-		existedItem.setId(1000);
+		existedItem.setId(1000L);
 		existedItem.setKey(ConfigConsts.CONFIG_FILE_CONTENT_KEY);
 		existedItem.setValue("before");
 

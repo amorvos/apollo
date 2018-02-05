@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.portal.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -118,7 +119,7 @@ public class ConfigServiceTest extends AbstractUnitTest {
 
 		List<ItemDTO> createItems = changeSets.getCreateItems();
 		ItemDTO createItem = createItems.get(0);
-		assertEquals(1, createItem.getLineNum());
+		assertTrue(1 == createItem.getLineNum());
 		assertEquals("a", createItem.getKey());
 		assertEquals("b", createItem.getValue());
 		assertEquals("comment", createItem.getComment());
@@ -170,7 +171,7 @@ public class ConfigServiceTest extends AbstractUnitTest {
 		assertEquals("newKey", createdItem.getKey());
 		assertEquals("c", createdItem.getValue());
 		assertEquals("comment", createdItem.getComment());
-		assertEquals(4, createdItem.getLineNum());
+		assertTrue(4 == createdItem.getLineNum());
 
 		List<ItemDTO> updateItems = changeSets.getUpdateItems();
 		ItemDTO updateItem1 = updateItems.get(0);
@@ -178,19 +179,19 @@ public class ConfigServiceTest extends AbstractUnitTest {
 		assertEquals("c", updateItem1.getKey());
 		assertEquals("newValue", updateItem1.getValue());
 		assertEquals("comment", updateItem1.getComment());
-		assertEquals(2, updateItem1.getLineNum());
+		assertTrue(2 == updateItem1.getLineNum());
 
 		assertEquals("d", updateItem2.getKey());
 		assertEquals("b", updateItem2.getValue());
 		assertEquals("newComment", updateItem2.getComment());
-		assertEquals(3, updateItem2.getLineNum());
+		assertTrue(3 == updateItem2.getLineNum());
 
 	}
 
 	private NamespaceDTO generateNamespaceDTO(String appId, String clusterName, String namespaceName) {
 		NamespaceDTO namespaceDTO = new NamespaceDTO();
 		namespaceDTO.setAppId(appId);
-		namespaceDTO.setId(1);
+		namespaceDTO.setId(1L);
 		namespaceDTO.setClusterName(clusterName);
 		namespaceDTO.setNamespaceName(namespaceName);
 		return namespaceDTO;
