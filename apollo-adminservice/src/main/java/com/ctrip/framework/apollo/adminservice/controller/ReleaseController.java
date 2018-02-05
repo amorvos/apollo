@@ -35,13 +35,16 @@ public class ReleaseController {
 	private static final Splitter RELEASES_SPLITTER = Splitter.on(",").omitEmptyStrings().trimResults();
 
 	@Autowired
-	private ReleaseService releaseService;
+	private NamespaceBranchService namespaceBranchService;
+
 	@Autowired
 	private NamespaceService namespaceService;
+
+	@Autowired
+	private ReleaseService releaseService;
+
 	@Autowired
 	private MessageSender messageSender;
-	@Autowired
-	private NamespaceBranchService namespaceBranchService;
 
 	@RequestMapping(value = "/releases/{releaseId}", method = RequestMethod.GET)
 	public ReleaseDTO get(@PathVariable("releaseId") long releaseId) {
@@ -49,7 +52,7 @@ public class ReleaseController {
 		if (release == null) {
 			throw new NotFoundException(String.format("release not found for %s", releaseId));
 		}
-		return BeanUtils.transfrom(ReleaseDTO.class, release);
+		return BeanUtils.transform(ReleaseDTO.class, release);
 	}
 
 	@RequestMapping(value = "/releases", method = RequestMethod.GET)
@@ -82,10 +85,10 @@ public class ReleaseController {
 	public ReleaseDTO getLatest(@PathVariable("appId") String appId, @PathVariable("clusterName") String clusterName,
 			@PathVariable("namespaceName") String namespaceName) {
 		Release release = releaseService.findLatestActiveRelease(appId, clusterName, namespaceName);
-		return BeanUtils.transfrom(ReleaseDTO.class, release);
+		return BeanUtils.transform(ReleaseDTO.class, release);
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	@RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases", method = RequestMethod.POST)
 	public ReleaseDTO publish(@PathVariable("appId") String appId, @PathVariable("clusterName") String clusterName,
 			@PathVariable("namespaceName") String namespaceName, @RequestParam("name") String releaseName,
@@ -109,7 +112,7 @@ public class ReleaseController {
 		}
 		messageSender.sendMessage(ReleaseMessageKeyGenerator.generate(appId, messageCluster, namespaceName),
 				Topics.APOLLO_RELEASE_TOPIC);
-		return BeanUtils.transfrom(ReleaseDTO.class, release);
+		return BeanUtils.transform(ReleaseDTO.class, release);
 	}
 
 	/**
@@ -117,7 +120,7 @@ public class ReleaseController {
 	 *
 	 * @return published result
 	 */
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	@RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/updateAndPublish", method = RequestMethod.POST)
 	public ReleaseDTO updateAndPublish(@PathVariable("appId") String appId,
 			@PathVariable("clusterName") String clusterName, @PathVariable("namespaceName") String namespaceName,
@@ -143,11 +146,11 @@ public class ReleaseController {
 		messageSender.sendMessage(ReleaseMessageKeyGenerator.generate(appId, clusterName, namespaceName),
 				Topics.APOLLO_RELEASE_TOPIC);
 
-		return BeanUtils.transfrom(ReleaseDTO.class, release);
+		return BeanUtils.transform(ReleaseDTO.class, release);
 
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	@RequestMapping(path = "/releases/{releaseId}/rollback", method = RequestMethod.PUT)
 	public void rollback(@PathVariable("releaseId") long releaseId, @RequestParam("operator") String operator) {
 

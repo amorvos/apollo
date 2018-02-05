@@ -26,37 +26,49 @@ import com.ctrip.framework.apollo.common.exception.ServiceException;
 @Aspect
 @Component
 public class NamespaceAcquireLockAspect {
-	private static final Logger logger = LoggerFactory.getLogger(NamespaceAcquireLockAspect.class);
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(NamespaceAcquireLockAspect.class);
 
 	@Autowired
 	private NamespaceLockService namespaceLockService;
+
 	@Autowired
 	private NamespaceService namespaceService;
+
 	@Autowired
 	private ItemService itemService;
+
 	@Autowired
 	private BizConfig bizConfig;
 
-	// create item
-	@Before("@annotation(PreAcquireNamespaceLock) && args(appId, clusterName, namespaceName, item, ..)")
+	/**
+	 * create item
+	 */
+	@Before("@annotation(com.ctrip.framework.apollo.adminservice.aop.AcquireNamespaceLock) && args(appId, clusterName, namespaceName, item, ..)")
 	public void requireLockAdvice(String appId, String clusterName, String namespaceName, ItemDTO item) {
 		acquireLock(appId, clusterName, namespaceName, item.getDataChangeLastModifiedBy());
 	}
 
-	// update item
-	@Before("@annotation(PreAcquireNamespaceLock) && args(appId, clusterName, namespaceName, itemId, item, ..)")
+	/**
+	 * update item
+	 */
+	@Before("@annotation(com.ctrip.framework.apollo.adminservice.aop.AcquireNamespaceLock) && args(appId, clusterName, namespaceName, itemId, item, ..)")
 	public void requireLockAdvice(String appId, String clusterName, String namespaceName, long itemId, ItemDTO item) {
 		acquireLock(appId, clusterName, namespaceName, item.getDataChangeLastModifiedBy());
 	}
 
-	// update by change set
-	@Before("@annotation(PreAcquireNamespaceLock) && args(appId, clusterName, namespaceName, changeSet, ..)")
+	/**
+	 * update by change set
+	 */
+	@Before("@annotation(com.ctrip.framework.apollo.adminservice.aop.AcquireNamespaceLock) && args(appId, clusterName, namespaceName, changeSet, ..)")
 	public void requireLockAdvice(String appId, String clusterName, String namespaceName, ItemChangeSets changeSet) {
 		acquireLock(appId, clusterName, namespaceName, changeSet.getDataChangeLastModifiedBy());
 	}
 
-	// delete item
-	@Before("@annotation(PreAcquireNamespaceLock) && args(itemId, operator, ..)")
+	/**
+	 * delete item
+	 */
+	@Before("@annotation(com.ctrip.framework.apollo.adminservice.aop.AcquireNamespaceLock) && args(itemId, operator, ..)")
 	public void requireLockAdvice(long itemId, String operator) {
 		Item item = itemService.findOne(itemId);
 		if (item == null) {
@@ -96,14 +108,14 @@ public class NamespaceAcquireLockAspect {
 		NamespaceLock namespaceLock = namespaceLockService.findLock(namespaceId);
 		if (namespaceLock == null) {
 			try {
-				tryLock(namespaceId, currentUser);
 				// lock success
+				tryLock(namespaceId, currentUser);
 			} catch (DataIntegrityViolationException e) {
 				// lock fail
 				namespaceLock = namespaceLockService.findLock(namespaceId);
 				checkLock(namespace, namespaceLock, currentUser);
 			} catch (Exception e) {
-				logger.error("try lock error", e);
+				LOGGER.error("try lock error", e);
 				throw e;
 			}
 		} else {
@@ -125,7 +137,6 @@ public class NamespaceAcquireLockAspect {
 			throw new ServiceException(
 					String.format("Check lock for %s failed, please retry.", namespace.getNamespaceName()));
 		}
-
 		String lockOwner = namespaceLock.getDataChangeCreatedBy();
 		if (!lockOwner.equals(currentUser)) {
 			throw new BadRequestException("namespace:" + namespace.getNamespaceName() + " is modified by " + lockOwner);

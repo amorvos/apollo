@@ -26,11 +26,17 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 
 /**
+ * <pre>
  * unlock namespace if is redo operation.
- * -------------------------------------------- For example: If namespace has a
- * item K1 = v1 -------------------------------------------- First operate:
- * change k1 = v2 (lock namespace) Second operate: change k1 = v1 (unlock
- * namespace)
+ * --------------------------------------------
+ * For example:
+ * If namespace has aitem K1 = v1
+ * --------------------------------------------
+ * First operate:
+ * change k1 = v2 (lock namespace)
+ * Second operate:
+ * change k1 = v1 (unlock namespace)
+ * </pre>
  */
 @Aspect
 @Component
@@ -40,35 +46,39 @@ public class NamespaceUnlockAspect {
 
 	@Autowired
 	private NamespaceLockService namespaceLockService;
+
 	@Autowired
 	private NamespaceService namespaceService;
-	@Autowired
-	private ItemService itemService;
+
 	@Autowired
 	private ReleaseService releaseService;
+
+	@Autowired
+	private ItemService itemService;
+
 	@Autowired
 	private BizConfig bizConfig;
 
 	// create item
-	@After("@annotation(PreAcquireNamespaceLock) && args(appId, clusterName, namespaceName, item, ..)")
+	@After("@annotation(com.ctrip.framework.apollo.adminservice.aop.AcquireNamespaceLock) && args(appId, clusterName, namespaceName, item, ..)")
 	public void requireLockAdvice(String appId, String clusterName, String namespaceName, ItemDTO item) {
 		tryUnlock(namespaceService.findOne(appId, clusterName, namespaceName));
 	}
 
 	// update item
-	@After("@annotation(PreAcquireNamespaceLock) && args(appId, clusterName, namespaceName, itemId, item, ..)")
+	@After("@annotation(com.ctrip.framework.apollo.adminservice.aop.AcquireNamespaceLock) && args(appId, clusterName, namespaceName, itemId, item, ..)")
 	public void requireLockAdvice(String appId, String clusterName, String namespaceName, long itemId, ItemDTO item) {
 		tryUnlock(namespaceService.findOne(appId, clusterName, namespaceName));
 	}
 
 	// update by change set
-	@After("@annotation(PreAcquireNamespaceLock) && args(appId, clusterName, namespaceName, changeSet, ..)")
+	@After("@annotation(com.ctrip.framework.apollo.adminservice.aop.AcquireNamespaceLock) && args(appId, clusterName, namespaceName, changeSet, ..)")
 	public void requireLockAdvice(String appId, String clusterName, String namespaceName, ItemChangeSets changeSet) {
 		tryUnlock(namespaceService.findOne(appId, clusterName, namespaceName));
 	}
 
 	// delete item
-	@After("@annotation(PreAcquireNamespaceLock) && args(itemId, operator, ..)")
+	@After("@annotation(com.ctrip.framework.apollo.adminservice.aop.AcquireNamespaceLock) && args(itemId, operator, ..)")
 	public void requireLockAdvice(long itemId, String operator) {
 		Item item = itemService.findOne(itemId);
 		if (item == null) {

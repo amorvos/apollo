@@ -41,11 +41,14 @@ import com.google.common.collect.Sets;
 @RestController
 @RequestMapping("/instances")
 public class InstanceConfigController {
+
 	private static final Splitter RELEASES_SPLITTER = Splitter.on(",").omitEmptyStrings().trimResults();
-	@Autowired
-	private ReleaseService releaseService;
+
 	@Autowired
 	private InstanceService instanceService;
+
+	@Autowired
+	private ReleaseService releaseService;
 
 	@RequestMapping(value = "/by-release", method = RequestMethod.GET)
 	public PageDTO<InstanceDTO> getByRelease(@RequestParam("releaseId") long releaseId, Pageable pageable) {
@@ -60,17 +63,12 @@ public class InstanceConfigController {
 
 		if (instanceConfigsPage.hasContent()) {
 			Multimap<Long, InstanceConfig> instanceConfigMap = HashMultimap.create();
-			Set<String> otherReleaseKeys = Sets.newHashSet();
-
-			for (InstanceConfig instanceConfig : instanceConfigsPage.getContent()) {
+			instanceConfigsPage.getContent().forEach(instanceConfig -> {
 				instanceConfigMap.put(instanceConfig.getInstanceId(), instanceConfig);
-				otherReleaseKeys.add(instanceConfig.getReleaseKey());
-			}
+			});
 
 			Set<Long> instanceIds = instanceConfigMap.keySet();
-
 			List<Instance> instances = instanceService.findInstancesByIds(instanceIds);
-
 			if (!CollectionUtils.isEmpty(instances)) {
 				instanceDTOs = BeanUtils.batchTransform(InstanceDTO.class, instances);
 			}
@@ -79,7 +77,6 @@ public class InstanceConfigController {
 				Collection<InstanceConfig> configs = instanceConfigMap.get(instanceDTO.getId());
 				List<InstanceConfigDTO> configDTOs = configs.stream().map(instanceConfig -> {
 					InstanceConfigDTO instanceConfigDTO = new InstanceConfigDTO();
-					// to save some space
 					instanceConfigDTO.setRelease(null);
 					instanceConfigDTO.setReleaseDeliveryTime(instanceConfig.getReleaseDeliveryTime());
 					instanceConfigDTO.setDataChangeLastModifiedTime(instanceConfig.getDataChangeLastModifiedTime());
@@ -132,7 +129,7 @@ public class InstanceConfigController {
 		for (Release release : otherReleases) {
 			// unset configurations to save space
 			release.setConfigurations(null);
-			ReleaseDTO releaseDTO = BeanUtils.transfrom(ReleaseDTO.class, release);
+			ReleaseDTO releaseDTO = BeanUtils.transform(ReleaseDTO.class, release);
 			releaseMap.put(release.getReleaseKey(), releaseDTO);
 		}
 

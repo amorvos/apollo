@@ -3,7 +3,7 @@ appService.service("NamespaceService", ['$resource', '$q', function ($resource, 
         find_public_namespaces: {
             method: 'GET',
             isArray: true,
-            url: '/appnamespaces/public'
+            url: '/app-namespaces/public'
         },
         createNamespace: {
             method: 'POST',
@@ -12,7 +12,7 @@ appService.service("NamespaceService", ['$resource', '$q', function ($resource, 
         },
         createAppNamespace: {
             method: 'POST',
-            url: '/apps/:appId/appnamespaces',
+            url: '/apps/:appId/app-namespaces',
             isArray: false
         },
         getNamespacePublishInfo: {
@@ -25,7 +25,7 @@ appService.service("NamespaceService", ['$resource', '$q', function ($resource, 
         },
         getPublicAppNamespaceAllNamespaces: {
             method: 'GET',
-            url: '/envs/:env/appnamespaces/:publicNamespaceName/namespaces',
+            url: '/envs/:env/app-namespaces/:publicNamespaceName/namespaces',
             isArray: true
         }
     });

@@ -1,7 +1,15 @@
 package com.ctrip.framework.apollo.common.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
 public class ReleaseDTO extends BaseDTO {
-	private long id;
+
+	private Long id;
 
 	private String releaseKey;
 
@@ -17,77 +25,6 @@ public class ReleaseDTO extends BaseDTO {
 
 	private String comment;
 
-	private boolean isAbandoned;
+	private Boolean isAbandoned;
 
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public String getReleaseKey() {
-		return releaseKey;
-	}
-
-	public void setReleaseKey(String releaseKey) {
-		this.releaseKey = releaseKey;
-	}
-
-	public String getAppId() {
-		return appId;
-	}
-
-	public void setAppId(String appId) {
-		this.appId = appId;
-	}
-
-	public String getClusterName() {
-		return clusterName;
-	}
-
-	public void setClusterName(String clusterName) {
-		this.clusterName = clusterName;
-	}
-
-	public String getComment() {
-		return comment;
-	}
-
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
-
-	public String getConfigurations() {
-		return configurations;
-	}
-
-	public void setConfigurations(String configurations) {
-		this.configurations = configurations;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getNamespaceName() {
-		return namespaceName;
-	}
-
-	public void setNamespaceName(String namespaceName) {
-		this.namespaceName = namespaceName;
-	}
-
-	public boolean isAbandoned() {
-		return isAbandoned;
-	}
-
-	public void setAbandoned(boolean abandoned) {
-		isAbandoned = abandoned;
-	}
 }

@@ -4,6 +4,13 @@ import java.util.Set;
 
 import com.google.common.collect.Sets;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
 public class GrayReleaseRuleDTO extends BaseDTO {
 
 	private String appId;
@@ -24,41 +31,5 @@ public class GrayReleaseRuleDTO extends BaseDTO {
 		this.namespaceName = namespaceName;
 		this.branchName = branchName;
 		this.ruleItems = Sets.newHashSet();
-	}
-
-	public String getAppId() {
-		return appId;
-	}
-
-	public String getClusterName() {
-		return clusterName;
-	}
-
-	public String getNamespaceName() {
-		return namespaceName;
-	}
-
-	public String getBranchName() {
-		return branchName;
-	}
-
-	public Set<GrayReleaseRuleItemDTO> getRuleItems() {
-		return ruleItems;
-	}
-
-	public void setRuleItems(Set<GrayReleaseRuleItemDTO> ruleItems) {
-		this.ruleItems = ruleItems;
-	}
-
-	public void addRuleItem(GrayReleaseRuleItemDTO ruleItem) {
-		this.ruleItems.add(ruleItem);
-	}
-
-	public Long getReleaseId() {
-		return releaseId;
-	}
-
-	public void setReleaseId(Long releaseId) {
-		this.releaseId = releaseId;
 	}
 }

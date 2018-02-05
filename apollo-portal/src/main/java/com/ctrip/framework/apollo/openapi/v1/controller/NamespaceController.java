@@ -48,7 +48,7 @@ public class NamespaceController {
 	private UserService userService;
 
 	@PreAuthorize(value = "@consumerPermissionValidator.hasCreateNamespacePermission(#request, #appId)")
-	@RequestMapping(value = "/openapi/v1/apps/{appId}/appnamespaces", method = RequestMethod.POST)
+	@RequestMapping(value = "/openapi/v1/apps/{appId}/app-namespaces", method = RequestMethod.POST)
 	public OpenAppNamespaceDTO createNamespace(@PathVariable String appId,
 			@RequestBody OpenAppNamespaceDTO appNamespaceDTO, HttpServletRequest request) {
 

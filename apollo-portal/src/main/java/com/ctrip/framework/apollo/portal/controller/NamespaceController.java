@@ -59,7 +59,7 @@ public class NamespaceController {
 	@Autowired
 	private PortalConfig portalConfig;
 
-	@RequestMapping(value = "/appnamespaces/public", method = RequestMethod.GET)
+	@RequestMapping(value = "/app-namespaces/public", method = RequestMethod.GET)
 	public List<AppNamespace> findPublicAppNamespaces() {
 		return appNamespaceService.findPublicAppNamespaces();
 	}
@@ -128,7 +128,7 @@ public class NamespaceController {
 	}
 
 	@PreAuthorize(value = "@permissionValidator.hasCreateAppNamespacePermission(#appId, #appNamespace)")
-	@RequestMapping(value = "/apps/{appId}/appnamespaces", method = RequestMethod.POST)
+	@RequestMapping(value = "/apps/{appId}/app-namespaces", method = RequestMethod.POST)
 	public AppNamespace createAppNamespace(@PathVariable String appId, @RequestBody AppNamespace appNamespace) {
 
 		RequestPrecondition.checkArgumentsNotEmpty(appNamespace.getAppId(), appNamespace.getName());
@@ -159,7 +159,7 @@ public class NamespaceController {
 		return namespaceService.getNamespacesPublishInfo(appId);
 	}
 
-	@RequestMapping(value = "/envs/{env}/appnamespaces/{publicNamespaceName}/namespaces", method = RequestMethod.GET)
+	@RequestMapping(value = "/envs/{env}/app-namespaces/{publicNamespaceName}/namespaces", method = RequestMethod.GET)
 	public List<NamespaceDTO> getPublicAppNamespaceAllNamespaces(@PathVariable String env,
 			@PathVariable String publicNamespaceName, @RequestParam(name = "page", defaultValue = "0") int page,
 			@RequestParam(name = "size", defaultValue = "10") int size) {

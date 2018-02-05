@@ -23,7 +23,7 @@ public class AuditService {
 		return auditRepository.findAudits(owner, entity, op);
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	void audit(String entityName, Long entityId, Audit.OP op, String owner) {
 		Audit audit = new Audit();
 		audit.setEntityName(entityName);
@@ -33,7 +33,7 @@ public class AuditService {
 		auditRepository.save(audit);
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	void audit(Audit audit) {
 		auditRepository.save(audit);
 	}

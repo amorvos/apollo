@@ -17,12 +17,12 @@ public class NamespaceLockService {
 		return namespaceLockRepository.findByNamespaceId(namespaceId);
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	public NamespaceLock tryLock(NamespaceLock lock) {
 		return namespaceLockRepository.save(lock);
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	public void unlock(Long namespaceId) {
 		namespaceLockRepository.deleteByNamespaceId(namespaceId);
 	}

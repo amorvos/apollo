@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 
 import com.ctrip.framework.apollo.biz.service.AppService;
 
+/***
+ * 这里认为数据库能查到数据就是应用存活状态
+ */
 @Component
 public class AdminServiceHealthIndicator implements HealthIndicator {
 

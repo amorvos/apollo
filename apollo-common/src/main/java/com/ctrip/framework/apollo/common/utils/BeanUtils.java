@@ -4,7 +4,6 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +14,8 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.util.CollectionUtils;
 
 import com.ctrip.framework.apollo.common.exception.BeanUtilsException;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public class BeanUtils {
 
@@ -34,7 +35,7 @@ public class BeanUtils {
 
 		List<T> result = new ArrayList<>(srcList.size());
 		for (Object srcObject : srcList) {
-			result.add(transfrom(clazz, srcObject));
+			result.add(transform(clazz, srcObject));
 		}
 		return result;
 	}
@@ -47,11 +48,11 @@ public class BeanUtils {
 	 * return BeanUtil.transform(UserDTO.class, userBean);
 	 * </pre>
 	 */
-	public static <T> T transfrom(Class<T> clazz, Object src) {
+	public static <T> T transform(Class<T> clazz, Object src) {
 		if (src == null) {
 			return null;
 		}
-		T instance = null;
+		T instance;
 		try {
 			instance = clazz.newInstance();
 		} catch (Exception e) {
@@ -65,11 +66,12 @@ public class BeanUtils {
 		final BeanWrapper src = new BeanWrapperImpl(source);
 		PropertyDescriptor[] pds = src.getPropertyDescriptors();
 
-		Set<String> emptyNames = new HashSet<String>();
+		Set<String> emptyNames = Sets.newHashSet();
 		for (PropertyDescriptor pd : pds) {
 			Object srcValue = src.getPropertyValue(pd.getName());
-			if (srcValue == null)
+			if (srcValue == null) {
 				emptyNames.add(pd.getName());
+			}
 		}
 		String[] result = new String[emptyNames.size()];
 		return emptyNames.toArray(result);
@@ -88,15 +90,16 @@ public class BeanUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <K, V> Map<K, V> mapByKey(String key, List<? extends Object> list) {
-		Map<K, V> map = new HashMap<K, V>();
+		Map<K, V> map = Maps.newHashMap();
 		if (CollectionUtils.isEmpty(list)) {
 			return map;
 		}
 		try {
 			Class<? extends Object> clazz = list.get(0).getClass();
 			Field field = deepFindField(clazz, key);
-			if (field == null)
+			if (field == null) {
 				throw new IllegalArgumentException("Could not find the key");
+			}
 			field.setAccessible(true);
 			for (Object o : list) {
 				map.put((K) field.get(o), (V) o);
@@ -117,15 +120,16 @@ public class BeanUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <K, V> Map<K, List<V>> aggByKeyToList(String key, List<? extends Object> list) {
-		Map<K, List<V>> map = new HashMap<K, List<V>>();
-		if (CollectionUtils.isEmpty(list)) {// 防止外面传入空list
+		Map<K, List<V>> map = Maps.newHashMap();
+		if (CollectionUtils.isEmpty(list)) {
 			return map;
 		}
 		try {
 			Class<? extends Object> clazz = list.get(0).getClass();
 			Field field = deepFindField(clazz, key);
-			if (field == null)
+			if (field == null) {
 				throw new IllegalArgumentException("Could not find the key");
+			}
 			field.setAccessible(true);
 			for (Object o : list) {
 				K k = (K) field.get(o);
@@ -151,7 +155,7 @@ public class BeanUtils {
 	@SuppressWarnings("unchecked")
 	public static <K> Set<K> toPropertySet(String key, List<? extends Object> list) {
 		Set<K> set = new HashSet<K>();
-		if (CollectionUtils.isEmpty(list)) {// 防止外面传入空list
+		if (CollectionUtils.isEmpty(list)) {
 			return set;
 		}
 		try {
@@ -215,21 +219,10 @@ public class BeanUtils {
 		}
 	}
 
-	/**
-	 *
-	 * @param source
-	 * @param target
-	 */
 	public static void copyProperties(Object source, Object target, String... ignoreProperties) {
 		org.springframework.beans.BeanUtils.copyProperties(source, target, ignoreProperties);
 	}
 
-	/**
-	 * The copy will ignore <em>BaseEntity</em> field
-	 *
-	 * @param source
-	 * @param target
-	 */
 	public static void copyEntityProperties(Object source, Object target) {
 		org.springframework.beans.BeanUtils.copyProperties(source, target, COPY_IGNORED_PROPERTIES);
 	}

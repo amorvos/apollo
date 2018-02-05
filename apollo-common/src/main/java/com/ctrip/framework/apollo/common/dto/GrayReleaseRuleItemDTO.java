@@ -1,51 +1,45 @@
 package com.ctrip.framework.apollo.common.dto;
 
-import static com.google.common.base.MoreObjects.toStringHelper;
-
+import java.util.Objects;
 import java.util.Set;
 
-import com.google.common.collect.Sets;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-/**
- * @author Jason Song(song_s@ctrip.com)
- */
+@Setter
+@Getter
+@ToString
 public class GrayReleaseRuleItemDTO {
+
 	public static final String ALL_IP = "*";
 
-	private String clientAppId;
 	private Set<String> clientIpList;
 
-	public GrayReleaseRuleItemDTO(String clientAppId) {
-		this(clientAppId, Sets.newHashSet());
-	}
+	private String clientAppId;
 
 	public GrayReleaseRuleItemDTO(String clientAppId, Set<String> clientIpList) {
 		this.clientAppId = clientAppId;
 		this.clientIpList = clientIpList;
 	}
 
-	public String getClientAppId() {
-		return clientAppId;
-	}
-
-	public Set<String> getClientIpList() {
-		return clientIpList;
-	}
-
-	public boolean matches(String clientAppId, String clientIp) {
-		return appIdMatches(clientAppId) && ipMatches(clientIp);
-	}
-
-	private boolean appIdMatches(String clientAppId) {
-		return this.clientAppId.equals(clientAppId);
-	}
-
-	private boolean ipMatches(String clientIp) {
-		return this.clientIpList.contains(ALL_IP) || clientIpList.contains(clientIp);
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		GrayReleaseRuleItemDTO that = (GrayReleaseRuleItemDTO) o;
+		return Objects.equals(clientIpList, that.clientIpList)
+				//
+				&& Objects.equals(clientAppId, that.clientAppId);
 	}
 
 	@Override
-	public String toString() {
-		return toStringHelper(this).add("clientAppId", clientAppId).add("clientIpList", clientIpList).toString();
+	public int hashCode() {
+
+		return Objects.hash(clientIpList, clientAppId);
 	}
 }

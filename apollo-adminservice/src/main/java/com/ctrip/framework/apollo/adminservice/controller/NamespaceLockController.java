@@ -20,8 +20,10 @@ public class NamespaceLockController {
 
 	@Autowired
 	private NamespaceLockService namespaceLockService;
+
 	@Autowired
 	private NamespaceService namespaceService;
+
 	@Autowired
 	private BizConfig bizConfig;
 
@@ -43,7 +45,7 @@ public class NamespaceLockController {
 			return null;
 		}
 
-		return BeanUtils.transfrom(NamespaceLockDTO.class, lock);
+		return BeanUtils.transform(NamespaceLockDTO.class, lock);
 	}
 
 }

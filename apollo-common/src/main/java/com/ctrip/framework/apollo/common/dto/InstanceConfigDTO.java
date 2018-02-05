@@ -1,36 +1,39 @@
 package com.ctrip.framework.apollo.common.dto;
 
 import java.util.Date;
+import java.util.Objects;
 
-/**
- * @author Jason Song(song_s@ctrip.com)
- */
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
 public class InstanceConfigDTO {
-	private ReleaseDTO release;
-	private Date releaseDeliveryTime;
+
 	private Date dataChangeLastModifiedTime;
 
-	public ReleaseDTO getRelease() {
-		return release;
+	private Date releaseDeliveryTime;
+
+	private ReleaseDTO release;
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		InstanceConfigDTO that = (InstanceConfigDTO) o;
+		return Objects.equals(dataChangeLastModifiedTime, that.dataChangeLastModifiedTime)
+				&& Objects.equals(releaseDeliveryTime, that.releaseDeliveryTime)
+				&& Objects.equals(release, that.release);
 	}
 
-	public void setRelease(ReleaseDTO release) {
-		this.release = release;
-	}
-
-	public Date getDataChangeLastModifiedTime() {
-		return dataChangeLastModifiedTime;
-	}
-
-	public void setDataChangeLastModifiedTime(Date dataChangeLastModifiedTime) {
-		this.dataChangeLastModifiedTime = dataChangeLastModifiedTime;
-	}
-
-	public Date getReleaseDeliveryTime() {
-		return releaseDeliveryTime;
-	}
-
-	public void setReleaseDeliveryTime(Date releaseDeliveryTime) {
-		this.releaseDeliveryTime = releaseDeliveryTime;
+	@Override
+	public int hashCode() {
+		return Objects.hash(dataChangeLastModifiedTime, releaseDeliveryTime, release);
 	}
 }

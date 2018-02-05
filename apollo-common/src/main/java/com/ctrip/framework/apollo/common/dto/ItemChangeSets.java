@@ -3,13 +3,19 @@ package com.ctrip.framework.apollo.common.dto;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * storage cud result
- */
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
 public class ItemChangeSets extends BaseDTO {
 
 	private List<ItemDTO> createItems = new LinkedList<>();
+
 	private List<ItemDTO> updateItems = new LinkedList<>();
+
 	private List<ItemDTO> deleteItems = new LinkedList<>();
 
 	public void addCreateItem(ItemDTO item) {
@@ -27,29 +33,4 @@ public class ItemChangeSets extends BaseDTO {
 	public boolean isEmpty() {
 		return createItems.isEmpty() && updateItems.isEmpty() && deleteItems.isEmpty();
 	}
-
-	public List<ItemDTO> getCreateItems() {
-		return createItems;
-	}
-
-	public void setCreateItems(List<ItemDTO> createItems) {
-		this.createItems = createItems;
-	}
-
-	public List<ItemDTO> getUpdateItems() {
-		return updateItems;
-	}
-
-	public void setUpdateItems(List<ItemDTO> updateItems) {
-		this.updateItems = updateItems;
-	}
-
-	public List<ItemDTO> getDeleteItems() {
-		return deleteItems;
-	}
-
-	public void setDeleteItems(List<ItemDTO> deleteItems) {
-		this.deleteItems = deleteItems;
-	}
-
 }

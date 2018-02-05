@@ -1,14 +1,14 @@
 package com.ctrip.framework.apollo.common.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
 public class NamespaceLockDTO extends BaseDTO {
 
-	private long namespaceId;
+	private Long namespaceId;
 
-	public long getNamespaceId() {
-		return namespaceId;
-	}
-
-	public void setNamespaceId(long namespaceId) {
-		this.namespaceId = namespaceId;
-	}
 }

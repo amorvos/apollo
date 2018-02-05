@@ -1,43 +1,19 @@
 package com.ctrip.framework.apollo.common.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
 public class NamespaceDTO extends BaseDTO {
-	private long id;
+
+	private Long id;
 
 	private String appId;
 
 	private String clusterName;
 
 	private String namespaceName;
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public String getAppId() {
-		return appId;
-	}
-
-	public void setAppId(String appId) {
-		this.appId = appId;
-	}
-
-	public String getClusterName() {
-		return clusterName;
-	}
-
-	public void setClusterName(String clusterName) {
-		this.clusterName = clusterName;
-	}
-
-	public String getNamespaceName() {
-		return namespaceName;
-	}
-
-	public void setNamespaceName(String namespaceName) {
-		this.namespaceName = namespaceName;
-	}
 }

@@ -29,7 +29,7 @@ public class AppService {
 		return Objects.isNull(appRepository.findByAppId(appId));
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	public void delete(long id, String operator) {
 		App app = appRepository.findOne(id);
 		if (app == null) {
@@ -56,12 +56,12 @@ public class AppService {
 		return appRepository.findByAppId(appId);
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	public App save(App entity) {
 		if (!isAppIdUnique(entity.getAppId())) {
 			throw new ServiceException("appId not unique");
 		}
-		entity.setId(0);// protection
+		entity.setId(0);
 		App app = appRepository.save(entity);
 
 		auditService.audit(App.class.getSimpleName(), app.getId(), Audit.OP.INSERT, app.getDataChangeCreatedBy());
@@ -69,7 +69,7 @@ public class AppService {
 		return app;
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	public void update(App app) {
 		String appId = app.getAppId();
 

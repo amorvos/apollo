@@ -1,6 +1,5 @@
 package com.ctrip.framework.apollo.adminservice.controller;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,12 +27,10 @@ import com.google.gson.reflect.TypeToken;
 @RestController
 public class ReleaseHistoryController {
 
-	private Gson gson = new Gson();
-	private Type configurationTypeReference = new TypeToken<Map<String, Object>>() {
-	}.getType();
-
 	@Autowired
 	private ReleaseHistoryService releaseHistoryService;
+
+	private Gson gson = new Gson();
 
 	@RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/releases/histories", method = RequestMethod.GET)
 	public PageDTO<ReleaseHistoryDTO> findReleaseHistoriesByNamespace(@PathVariable String appId,
@@ -82,7 +79,9 @@ public class ReleaseHistoryController {
 	private ReleaseHistoryDTO transformReleaseHistory2DTO(ReleaseHistory releaseHistory) {
 		ReleaseHistoryDTO dto = new ReleaseHistoryDTO();
 		BeanUtils.copyProperties(releaseHistory, dto, "operationContext");
-		dto.setOperationContext(gson.fromJson(releaseHistory.getOperationContext(), configurationTypeReference));
+		dto.setOperationContext(
+				gson.fromJson(releaseHistory.getOperationContext(), new TypeToken<Map<String, Object>>() {
+				}.getType()));
 
 		return dto;
 	}

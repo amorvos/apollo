@@ -1,10 +1,17 @@
 package com.ctrip.framework.apollo.common.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
 public class ItemDTO extends BaseDTO {
 
-	private long id;
+	private Long id;
 
-	private long namespaceId;
+	private Long namespaceId;
 
 	private String key;
 
@@ -12,7 +19,7 @@ public class ItemDTO extends BaseDTO {
 
 	private String comment;
 
-	private int lineNum;
+	private Integer lineNum;
 
 	public ItemDTO() {
 
@@ -24,53 +31,4 @@ public class ItemDTO extends BaseDTO {
 		this.comment = comment;
 		this.lineNum = lineNum;
 	}
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public String getComment() {
-		return comment;
-	}
-
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
-
-	public String getKey() {
-		return key;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
-	}
-
-	public long getNamespaceId() {
-		return namespaceId;
-	}
-
-	public void setNamespaceId(long namespaceId) {
-		this.namespaceId = namespaceId;
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	public int getLineNum() {
-		return lineNum;
-	}
-
-	public void setLineNum(int lineNum) {
-		this.lineNum = lineNum;
-	}
-
 }

@@ -90,7 +90,7 @@ public class AdminServiceAPI {
 		}
 
 		public AppNamespaceDTO createAppNamespace(Env env, AppNamespaceDTO appNamespace) {
-			return restTemplate.post(env, "apps/{appId}/appnamespaces", appNamespace, AppNamespaceDTO.class,
+			return restTemplate.post(env, "apps/{appId}/app-namespaces", appNamespace, AppNamespaceDTO.class,
 					appNamespace.getAppId());
 		}
 
@@ -107,13 +107,13 @@ public class AdminServiceAPI {
 		public List<NamespaceDTO> getPublicAppNamespaceAllNamespaces(Env env, String publicNamespaceName, int page,
 				int size) {
 			NamespaceDTO[] namespaceDTOs = restTemplate.get(env,
-					"/appnamespaces/{publicNamespaceName}/namespaces?page={page}&size={size}", NamespaceDTO[].class,
+					"/app-namespaces/{publicNamespaceName}/namespaces?page={page}&size={size}", NamespaceDTO[].class,
 					publicNamespaceName, page, size);
 			return Arrays.asList(namespaceDTOs);
 		}
 
 		public int countPublicAppNamespaceAssociatedNamespaces(Env env, String publicNamesapceName) {
-			Integer count = restTemplate.get(env, "/appnamespaces/{publicNamespaceName}/associated-namespaces/count",
+			Integer count = restTemplate.get(env, "/app-namespaces/{publicNamespaceName}/associated-namespaces/count",
 					Integer.class, publicNamesapceName);
 
 			return count == null ? 0 : count;

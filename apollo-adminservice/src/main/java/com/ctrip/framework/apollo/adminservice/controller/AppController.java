@@ -26,10 +26,10 @@ import com.ctrip.framework.apollo.core.utils.StringUtils;
 public class AppController {
 
 	@Autowired
-	private AppService appService;
+	private AdminService adminService;
 
 	@Autowired
-	private AdminService adminService;
+	private AppService appService;
 
 	@RequestMapping(path = "/apps", method = RequestMethod.POST)
 	public AppDTO create(@RequestBody AppDTO dto) {
@@ -37,16 +37,14 @@ public class AppController {
 			throw new BadRequestException(
 					String.format("AppId格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
 		}
-		App entity = BeanUtils.transfrom(App.class, dto);
+		App entity = BeanUtils.transform(App.class, dto);
 		App managedEntity = appService.findOne(entity.getAppId());
 		if (managedEntity != null) {
 			throw new BadRequestException("app already exist.");
 		}
 
 		entity = adminService.createNewApp(entity);
-
-		dto = BeanUtils.transfrom(AppDTO.class, entity);
-		return dto;
+		return BeanUtils.transform(AppDTO.class, entity);
 	}
 
 	@RequestMapping(value = "/apps/{appId:.+}", method = RequestMethod.DELETE)
@@ -84,7 +82,7 @@ public class AppController {
 		if (app == null) {
 			throw new NotFoundException("app not found for appId " + appId);
 		}
-		return BeanUtils.transfrom(AppDTO.class, app);
+		return BeanUtils.transform(AppDTO.class, app);
 	}
 
 	@RequestMapping(value = "/apps/{appId}/unique", method = RequestMethod.GET)

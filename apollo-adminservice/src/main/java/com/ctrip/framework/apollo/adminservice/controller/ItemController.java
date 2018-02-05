@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ctrip.framework.apollo.adminservice.aop.PreAcquireNamespaceLock;
+import com.ctrip.framework.apollo.adminservice.aop.AcquireNamespaceLock;
 import com.ctrip.framework.apollo.biz.entity.Commit;
 import com.ctrip.framework.apollo.biz.entity.Item;
 import com.ctrip.framework.apollo.biz.entity.Namespace;
@@ -27,17 +27,19 @@ import com.ctrip.framework.apollo.common.utils.BeanUtils;
 public class ItemController {
 
 	@Autowired
-	private ItemService itemService;
-	@Autowired
 	private NamespaceService namespaceService;
+
 	@Autowired
 	private CommitService commitService;
 
-	@PreAcquireNamespaceLock
+	@Autowired
+	private ItemService itemService;
+
+	@AcquireNamespaceLock
 	@RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items", method = RequestMethod.POST)
 	public ItemDTO create(@PathVariable("appId") String appId, @PathVariable("clusterName") String clusterName,
 			@PathVariable("namespaceName") String namespaceName, @RequestBody ItemDTO dto) {
-		Item entity = BeanUtils.transfrom(Item.class, dto);
+		Item entity = BeanUtils.transform(Item.class, dto);
 
 		ConfigChangeContentBuilder builder = new ConfigChangeContentBuilder();
 		Item managedEntity = itemService.findOne(appId, clusterName, namespaceName, entity.getKey());
@@ -47,7 +49,7 @@ public class ItemController {
 			entity = itemService.save(entity);
 			builder.createItem(entity);
 		}
-		dto = BeanUtils.transfrom(ItemDTO.class, entity);
+		dto = BeanUtils.transform(ItemDTO.class, entity);
 
 		Commit commit = new Commit();
 		commit.setAppId(appId);
@@ -61,13 +63,13 @@ public class ItemController {
 		return dto;
 	}
 
-	@PreAcquireNamespaceLock
+	@AcquireNamespaceLock
 	@RequestMapping(path = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items/{itemId}", method = RequestMethod.PUT)
 	public ItemDTO update(@PathVariable("appId") String appId, @PathVariable("clusterName") String clusterName,
 			@PathVariable("namespaceName") String namespaceName, @PathVariable("itemId") long itemId,
 			@RequestBody ItemDTO itemDTO) {
 
-		Item entity = BeanUtils.transfrom(Item.class, itemDTO);
+		Item entity = BeanUtils.transform(Item.class, itemDTO);
 
 		ConfigChangeContentBuilder builder = new ConfigChangeContentBuilder();
 
@@ -76,7 +78,7 @@ public class ItemController {
 			throw new BadRequestException("item not exist");
 		}
 
-		Item beforeUpdateItem = BeanUtils.transfrom(Item.class, managedEntity);
+		Item beforeUpdateItem = BeanUtils.transform(Item.class, managedEntity);
 
 		// protect. only value,comment,lastModifiedBy can be modified
 		managedEntity.setValue(entity.getValue());
@@ -85,7 +87,7 @@ public class ItemController {
 
 		entity = itemService.update(managedEntity);
 		builder.updateItem(beforeUpdateItem, entity);
-		itemDTO = BeanUtils.transfrom(ItemDTO.class, entity);
+		itemDTO = BeanUtils.transform(ItemDTO.class, entity);
 
 		if (builder.hasContent()) {
 			Commit commit = new Commit();
@@ -101,7 +103,7 @@ public class ItemController {
 		return itemDTO;
 	}
 
-	@PreAcquireNamespaceLock
+	@AcquireNamespaceLock
 	@RequestMapping(path = "/items/{itemId}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable("itemId") long itemId, @RequestParam String operator) {
 		Item entity = itemService.findOne(itemId);
@@ -135,7 +137,7 @@ public class ItemController {
 		if (item == null) {
 			throw new NotFoundException("item not found for itemId " + itemId);
 		}
-		return BeanUtils.transfrom(ItemDTO.class, item);
+		return BeanUtils.transform(ItemDTO.class, item);
 	}
 
 	@RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/items/{key:.+}", method = RequestMethod.GET)
@@ -146,7 +148,7 @@ public class ItemController {
 			throw new NotFoundException(
 					String.format("item not found for %s %s %s %s", appId, clusterName, namespaceName, key));
 		}
-		return BeanUtils.transfrom(ItemDTO.class, item);
+		return BeanUtils.transform(ItemDTO.class, item);
 	}
 
 }

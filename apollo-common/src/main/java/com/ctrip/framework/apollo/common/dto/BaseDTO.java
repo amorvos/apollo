@@ -2,6 +2,13 @@ package com.ctrip.framework.apollo.common.dto;
 
 import java.util.Date;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
 public class BaseDTO {
 
 	protected String dataChangeCreatedBy;
@@ -11,36 +18,4 @@ public class BaseDTO {
 	protected Date dataChangeCreatedTime;
 
 	protected Date dataChangeLastModifiedTime;
-
-	public String getDataChangeCreatedBy() {
-		return dataChangeCreatedBy;
-	}
-
-	public void setDataChangeCreatedBy(String dataChangeCreatedBy) {
-		this.dataChangeCreatedBy = dataChangeCreatedBy;
-	}
-
-	public String getDataChangeLastModifiedBy() {
-		return dataChangeLastModifiedBy;
-	}
-
-	public void setDataChangeLastModifiedBy(String dataChangeLastModifiedBy) {
-		this.dataChangeLastModifiedBy = dataChangeLastModifiedBy;
-	}
-
-	public Date getDataChangeCreatedTime() {
-		return dataChangeCreatedTime;
-	}
-
-	public void setDataChangeCreatedTime(Date dataChangeCreatedTime) {
-		this.dataChangeCreatedTime = dataChangeCreatedTime;
-	}
-
-	public Date getDataChangeLastModifiedTime() {
-		return dataChangeLastModifiedTime;
-	}
-
-	public void setDataChangeLastModifiedTime(Date dataChangeLastModifiedTime) {
-		this.dataChangeLastModifiedTime = dataChangeLastModifiedTime;
-	}
 }

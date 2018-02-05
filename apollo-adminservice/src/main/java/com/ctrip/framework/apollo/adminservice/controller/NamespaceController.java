@@ -32,7 +32,7 @@ public class NamespaceController {
 			throw new BadRequestException(
 					String.format("Namespace格式错误: %s", InputValidator.INVALID_CLUSTER_NAMESPACE_MESSAGE));
 		}
-		Namespace entity = BeanUtils.transfrom(Namespace.class, dto);
+		Namespace entity = BeanUtils.transform(Namespace.class, dto);
 		Namespace managedEntity = namespaceService.findOne(appId, clusterName, entity.getNamespaceName());
 		if (managedEntity != null) {
 			throw new BadRequestException("namespace already exist.");
@@ -40,7 +40,7 @@ public class NamespaceController {
 
 		entity = namespaceService.save(entity);
 
-		dto = BeanUtils.transfrom(NamespaceDTO.class, entity);
+		dto = BeanUtils.transform(NamespaceDTO.class, entity);
 		return dto;
 	}
 
@@ -67,7 +67,7 @@ public class NamespaceController {
 		Namespace namespace = namespaceService.findOne(namespaceId);
 		if (namespace == null)
 			throw new NotFoundException(String.format("namespace not found for %s", namespaceId));
-		return BeanUtils.transfrom(NamespaceDTO.class, namespace);
+		return BeanUtils.transform(NamespaceDTO.class, namespace);
 	}
 
 	@RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName:.+}", method = RequestMethod.GET)
@@ -77,7 +77,7 @@ public class NamespaceController {
 		if (namespace == null)
 			throw new NotFoundException(
 					String.format("namespace not found for %s %s %s", appId, clusterName, namespaceName));
-		return BeanUtils.transfrom(NamespaceDTO.class, namespace);
+		return BeanUtils.transform(NamespaceDTO.class, namespace);
 	}
 
 	@RequestMapping(value = "/apps/{appId}/clusters/{clusterName}/namespaces/{namespaceName}/associated-public-namespace", method = RequestMethod.GET)
@@ -89,7 +89,7 @@ public class NamespaceController {
 			throw new NotFoundException(String.format("public namespace not found. namespace:%s", namespaceName));
 		}
 
-		return BeanUtils.transfrom(NamespaceDTO.class, namespace);
+		return BeanUtils.transform(NamespaceDTO.class, namespace);
 	}
 
 	/**
