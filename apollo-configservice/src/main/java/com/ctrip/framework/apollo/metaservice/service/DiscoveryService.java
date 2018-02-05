@@ -7,6 +7,7 @@ import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.shared.Application;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -15,6 +16,7 @@ import java.util.List;
 @Service
 public class DiscoveryService {
 
+  @Qualifier("eurekaClient")
   @Autowired
   private EurekaClient eurekaClient;
 

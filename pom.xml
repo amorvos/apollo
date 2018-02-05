@@ -87,7 +87,6 @@
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
 		<!-- for travis usage -->
 		<github.global.server>github</github.global.server>
-		<github.global.oauth2Token>${env.GITHUB_OAUTH_TOKEN}</github.global.oauth2Token>
 	</properties>
 
 	<modules>
