@@ -3,12 +3,15 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header panel-primary">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
                 <div class="modal-title text-center">
-                    <span style="font-size: 18px;" ng-bind="toRollbackNamespace.firstRelease.name"></span>
+                    <span style="font-size: 18px;"
+                          ng-bind="toRollbackNamespace.firstRelease.name"></span>
                     <span style="font-size: 18px;"> &nbsp;回滚到&nbsp;</span>
-                    <span style="font-size: 18px;" ng-bind="toRollbackNamespace.secondRelease.name"></span>
+                    <span style="font-size: 18px;"
+                          ng-bind="toRollbackNamespace.secondRelease.name"></span>
                 </div>
             </div>
             <div class="modal-body">
@@ -48,12 +51,15 @@
                                     <span ng-show="change.type == 'MODIFIED'">更新</span>
                                     <span ng-show="change.type == 'DELETED'">删除</span>
                                 </td>
-                                <td width="20%" ng-bind="change.entity.firstEntity.key">
+                                <td width="20%"
+                                    ng-bind="change.entity.firstEntity.key">
 
                                 </td>
-                                <td width="35%" ng-bind="change.entity.firstEntity.value">
+                                <td width="35%"
+                                    ng-bind="change.entity.firstEntity.value">
                                 </td>
-                                <td width="35%" ng-bind="change.entity.secondEntity.value">
+                                <td width="35%"
+                                    ng-bind="change.entity.secondEntity.value">
                                 </td>
                             </tr>
                             </tbody>
@@ -66,18 +72,21 @@
                         <div ng-repeat="change in toRollbackNamespace.releaseCompareResult"
                              ng-if="!toRollbackNamespace.isPropertiesFormat">
                             <h5>回滚前</h5>
-                                        <textarea class="form-control no-radius" rows="20"
-                                                  ng-disabled="true" ng-bind="change.entity.firstEntity.value">
+                            <textarea class="form-control no-radius" rows="20"
+                                      ng-disabled="true"
+                                      ng-bind="change.entity.firstEntity.value">
                                             </textarea>
                             <hr>
                             <h5>回滚后</h5>
-                                        <textarea class="form-control no-radius" rows="20"
-                                                  ng-disabled="true" ng-bind="change.entity.secondEntity.value">
+                            <textarea class="form-control no-radius" rows="20"
+                                      ng-disabled="true"
+                                      ng-bind="change.entity.secondEntity.value">
                                             </textarea>
                         </div>
 
                     </div>
-                    <div class="col-sm-12 text-center" ng-if="toRollbackNamespace.releaseCompareResult.length == 0">
+                    <div class="col-sm-12 text-center"
+                         ng-if="toRollbackNamespace.releaseCompareResult.length == 0">
                         <h4>
                             配置没有变化
                         </h4>
@@ -87,7 +96,9 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal">取消
+                </button>
                 <button type="submit" class="btn btn-danger"
                         ng-disabled="toRollbackNamespace.rollbackBtnDisabled">回滚
                 </button>

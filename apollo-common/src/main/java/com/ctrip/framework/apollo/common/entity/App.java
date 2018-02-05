@@ -1,11 +1,11 @@
 package com.ctrip.framework.apollo.common.entity;
 
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Table(name = "App")
@@ -13,126 +13,122 @@ import javax.persistence.Table;
 @Where(clause = "isDeleted = 0")
 public class App extends BaseEntity {
 
-  @Column(name = "Name", nullable = false)
-  private String name;
+	@Column(name = "Name", nullable = false)
+	private String name;
 
-  @Column(name = "AppId", nullable = false)
-  private String appId;
+	@Column(name = "AppId", nullable = false)
+	private String appId;
 
-  @Column(name = "OrgId", nullable = false)
-  private String orgId;
+	@Column(name = "OrgId", nullable = false)
+	private String orgId;
 
-  @Column(name = "OrgName", nullable = false)
-  private String orgName;
+	@Column(name = "OrgName", nullable = false)
+	private String orgName;
 
-  @Column(name = "OwnerName", nullable = false)
-  private String ownerName;
+	@Column(name = "OwnerName", nullable = false)
+	private String ownerName;
 
-  @Column(name = "OwnerEmail", nullable = false)
-  private String ownerEmail;
+	@Column(name = "OwnerEmail", nullable = false)
+	private String ownerEmail;
 
-  public String getAppId() {
-    return appId;
-  }
+	public static Builder builder() {
+		return new Builder();
+	}
 
-  public String getName() {
-    return name;
-  }
+	public String getAppId() {
+		return appId;
+	}
 
-  public String getOrgId() {
-    return orgId;
-  }
+	public void setAppId(String appId) {
+		this.appId = appId;
+	}
 
-  public String getOrgName() {
-    return orgName;
-  }
+	public String getName() {
+		return name;
+	}
 
-  public String getOwnerEmail() {
-    return ownerEmail;
-  }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-  public String getOwnerName() {
-    return ownerName;
-  }
+	public String getOrgId() {
+		return orgId;
+	}
 
-  public void setAppId(String appId) {
-    this.appId = appId;
-  }
+	public void setOrgId(String orgId) {
+		this.orgId = orgId;
+	}
 
-  public void setName(String name) {
-    this.name = name;
-  }
+	public String getOrgName() {
+		return orgName;
+	}
 
-  public void setOrgId(String orgId) {
-    this.orgId = orgId;
-  }
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
 
-  public void setOrgName(String orgName) {
-    this.orgName = orgName;
-  }
+	public String getOwnerEmail() {
+		return ownerEmail;
+	}
 
-  public void setOwnerEmail(String ownerEmail) {
-    this.ownerEmail = ownerEmail;
-  }
+	public void setOwnerEmail(String ownerEmail) {
+		this.ownerEmail = ownerEmail;
+	}
 
-  public void setOwnerName(String ownerName) {
-    this.ownerName = ownerName;
-  }
+	public String getOwnerName() {
+		return ownerName;
+	}
 
-  public String toString() {
-    return toStringHelper().add("name", name).add("appId", appId)
-        .add("orgId", orgId)
-        .add("orgName", orgName)
-        .add("ownerName", ownerName)
-        .add("ownerEmail", ownerEmail).toString();
-  }
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
 
-  public static class Builder {
+	public String toString() {
+		return toStringHelper().add("name", name).add("appId", appId).add("orgId", orgId).add("orgName", orgName)
+				.add("ownerName", ownerName).add("ownerEmail", ownerEmail).toString();
+	}
 
-    public Builder() {
-    }
+	public static class Builder {
 
-    private App app = new App();
+		private App app = new App();
 
-    public Builder name(String name) {
-      app.setName(name);
-      return this;
-    }
+		public Builder() {
+		}
 
-    public Builder appId(String appId) {
-      app.setAppId(appId);
-      return this;
-    }
+		public Builder name(String name) {
+			app.setName(name);
+			return this;
+		}
 
-    public Builder orgId(String orgId) {
-      app.setOrgId(orgId);
-      return this;
-    }
+		public Builder appId(String appId) {
+			app.setAppId(appId);
+			return this;
+		}
 
-    public Builder orgName(String orgName) {
-      app.setOrgName(orgName);
-      return this;
-    }
+		public Builder orgId(String orgId) {
+			app.setOrgId(orgId);
+			return this;
+		}
 
-    public Builder ownerName(String ownerName) {
-      app.setOwnerName(ownerName);
-      return this;
-    }
+		public Builder orgName(String orgName) {
+			app.setOrgName(orgName);
+			return this;
+		}
 
-    public Builder ownerEmail(String ownerEmail) {
-      app.setOwnerEmail(ownerEmail);
-      return this;
-    }
+		public Builder ownerName(String ownerName) {
+			app.setOwnerName(ownerName);
+			return this;
+		}
 
-    public App build() {
-      return app;
-    }
+		public Builder ownerEmail(String ownerEmail) {
+			app.setOwnerEmail(ownerEmail);
+			return this;
+		}
 
-  }
+		public App build() {
+			return app;
+		}
 
-  public static Builder builder() {
-    return new Builder();
-  }
-
+	}
 
 }

@@ -14,13 +14,13 @@ import com.ctrip.framework.apollo.spring.util.BeanRegistrationUtil;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class ConfigPropertySourcesProcessor extends PropertySourcesProcessor
-    implements BeanDefinitionRegistryPostProcessor {
+		implements BeanDefinitionRegistryPostProcessor {
 
-  @Override
-  public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-    BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, PropertySourcesPlaceholderConfigurer.class.getName(),
-        PropertySourcesPlaceholderConfigurer.class);
-    BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, ApolloAnnotationProcessor.class.getName(),
-        ApolloAnnotationProcessor.class);
-  }
+	@Override
+	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
+		BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry,
+				PropertySourcesPlaceholderConfigurer.class.getName(), PropertySourcesPlaceholderConfigurer.class);
+		BeanRegistrationUtil.registerBeanDefinitionIfNotExists(registry, ApolloAnnotationProcessor.class.getName(),
+				ApolloAnnotationProcessor.class);
+	}
 }

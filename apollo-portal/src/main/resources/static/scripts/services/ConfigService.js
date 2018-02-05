@@ -52,11 +52,11 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
         load_namespace: function (appId, env, clusterName, namespaceName) {
             var d = $q.defer();
             config_source.load_namespace({
-                                             appId: appId,
-                                             env: env,
-                                             clusterName: clusterName,
-                                             namespaceName: namespaceName
-                                         }, function (result) {
+                appId: appId,
+                env: env,
+                clusterName: clusterName,
+                namespaceName: namespaceName
+            }, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);
@@ -66,11 +66,11 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
         load_public_namespace_for_associated_namespace: function (env, appId, clusterName, namespaceName) {
             var d = $q.defer();
             config_source.load_public_namespace_for_associated_namespace({
-                                                                             env: env,
-                                                                             appId: appId,
-                                                                             clusterName: clusterName,
-                                                                             namespaceName: namespaceName
-                                                                         }, function (result) {
+                env: env,
+                appId: appId,
+                clusterName: clusterName,
+                namespaceName: namespaceName
+            }, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);
@@ -80,10 +80,10 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
         load_all_namespaces: function (appId, env, clusterName) {
             var d = $q.defer();
             config_source.load_all_namespaces({
-                                                  appId: appId,
-                                                  env: env,
-                                                  clusterName: clusterName
-                                              }, function (result) {
+                appId: appId,
+                env: env,
+                clusterName: clusterName
+            }, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);
@@ -94,12 +94,12 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
         find_items: function (appId, env, clusterName, namespaceName, orderBy) {
             var d = $q.defer();
             config_source.find_items({
-                                         appId: appId,
-                                         env: env,
-                                         clusterName: clusterName,
-                                         namespaceName: namespaceName,
-                                         orderBy: orderBy
-                                     }, function (result) {
+                appId: appId,
+                env: env,
+                clusterName: clusterName,
+                namespaceName: namespaceName,
+                orderBy: orderBy
+            }, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);
@@ -110,12 +110,12 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
         modify_items: function (appId, env, clusterName, namespaceName, model) {
             var d = $q.defer();
             config_source.modify_items({
-                                           appId: appId,
-                                           env: env,
-                                           clusterName: clusterName,
-                                           namespaceName: namespaceName
-                                       },
-                                       model, function (result) {
+                    appId: appId,
+                    env: env,
+                    clusterName: clusterName,
+                    namespaceName: namespaceName
+                },
+                model, function (result) {
                     d.resolve(result);
 
                 }, function (result) {
@@ -127,8 +127,8 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
         diff: function (namespaceName, sourceData) {
             var d = $q.defer();
             config_source.diff({
-                                   namespaceName: namespaceName
-                               }, sourceData, function (result) {
+                namespaceName: namespaceName
+            }, sourceData, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);
@@ -139,9 +139,9 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
         sync_items: function (appId, namespaceName, sourceData) {
             var d = $q.defer();
             config_source.sync_item({
-                                        appId: appId,
-                                        namespaceName: namespaceName
-                                    }, sourceData, function (result) {
+                appId: appId,
+                namespaceName: namespaceName
+            }, sourceData, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);
@@ -152,11 +152,11 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
         create_item: function (appId, env, clusterName, namespaceName, item) {
             var d = $q.defer();
             config_source.create_item({
-                                          appId: appId,
-                                          env: env,
-                                          clusterName: clusterName,
-                                          namespaceName: namespaceName
-                                      }, item, function (result) {
+                appId: appId,
+                env: env,
+                clusterName: clusterName,
+                namespaceName: namespaceName
+            }, item, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);
@@ -167,11 +167,11 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
         update_item: function (appId, env, clusterName, namespaceName, item) {
             var d = $q.defer();
             config_source.update_item({
-                                          appId: appId,
-                                          env: env,
-                                          clusterName: clusterName,
-                                          namespaceName: namespaceName
-                                      }, item, function (result) {
+                appId: appId,
+                env: env,
+                clusterName: clusterName,
+                namespaceName: namespaceName
+            }, item, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);
@@ -182,12 +182,12 @@ appService.service("ConfigService", ['$resource', '$q', function ($resource, $q)
         delete_item: function (appId, env, clusterName, namespaceName, itemId) {
             var d = $q.defer();
             config_source.delete_item({
-                                          appId: appId,
-                                          env: env,
-                                          clusterName: clusterName,
-                                          namespaceName: namespaceName,
-                                          itemId: itemId
-                                      }, function (result) {
+                appId: appId,
+                env: env,
+                clusterName: clusterName,
+                namespaceName: namespaceName,
+                itemId: itemId
+            }, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);

@@ -1,6 +1,6 @@
 open_manage_module.controller('OpenManageController',
-                              ['$scope', 'toastr', 'AppUtil', 'OrganizationService', 'ConsumerService', 'PermissionService',
-                               OpenManageController]);
+    ['$scope', 'toastr', 'AppUtil', 'OrganizationService', 'ConsumerService', 'PermissionService',
+        OpenManageController]);
 
 function OpenManageController($scope, toastr, AppUtil, OrganizationService, ConsumerService, PermissionService) {
 
@@ -37,10 +37,10 @@ function OpenManageController($scope, toastr, AppUtil, OrganizationService, Cons
                 organizations.push(org);
             });
             $orgWidget.select2({
-                                   placeholder: '请选择部门',
-                                   width: '100%',
-                                   data: organizations
-                               });
+                placeholder: '请选择部门',
+                width: '100%',
+                data: organizations
+            });
         }, function (result) {
             toastr.error(AppUtil.errorMsg(result), "load organizations error");
         });
@@ -49,7 +49,7 @@ function OpenManageController($scope, toastr, AppUtil, OrganizationService, Cons
     function initPermission() {
         PermissionService.has_root_permission()
             .then(function (result) {
-                  $scope.isRootUser = result.hasPermission;
+                $scope.isRootUser = result.hasPermission;
             })
     }
 
@@ -112,14 +112,14 @@ function OpenManageController($scope, toastr, AppUtil, OrganizationService, Cons
 
     function assignRoleToConsumer() {
         ConsumerService.assignRoleToConsumer($scope.consumerRole.token,
-                                             $scope.consumerRole.type,
-                                             $scope.consumerRole.appId,
-                                             $scope.consumerRole.namespaceName)
+            $scope.consumerRole.type,
+            $scope.consumerRole.appId,
+            $scope.consumerRole.namespaceName)
             .then(function (consumerRoles) {
                 toastr.success("赋权成功");
             }, function (response) {
                 AppUtil.showErrorMsg(response, "赋权失败");
             })
     }
-    
+
 }

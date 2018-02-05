@@ -42,12 +42,6 @@ public class SimpleApolloConfigDemo {
 		config.addChangeListener(changeListener);
 	}
 
-	private String getConfig(String key) {
-		String result = config.getProperty(key, DEFAULT_VALUE);
-		LOGGER.info(String.format("Loading key : %s with value: %s", key, result));
-		return result;
-	}
-
 	public static void main(String[] args) throws IOException {
 		SimpleApolloConfigDemo apolloConfigDemo = new SimpleApolloConfigDemo();
 		System.out.println("Apollo Config Demo. Please input key to get the value. Input quit to exit.");
@@ -63,5 +57,11 @@ public class SimpleApolloConfigDemo {
 			}
 			apolloConfigDemo.getConfig(input);
 		}
+	}
+
+	private String getConfig(String key) {
+		String result = config.getProperty(key, DEFAULT_VALUE);
+		LOGGER.info(String.format("Loading key : %s with value: %s", key, result));
+		return result;
 	}
 }

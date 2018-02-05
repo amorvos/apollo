@@ -1,7 +1,5 @@
 package com.ctrip.framework.apollo;
 
-
-import com.ctrip.framework.apollo.spring.BootstrapConfigTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -19,6 +17,7 @@ import com.ctrip.framework.apollo.internals.XmlConfigFileTest;
 import com.ctrip.framework.apollo.spi.DefaultConfigFactoryManagerTest;
 import com.ctrip.framework.apollo.spi.DefaultConfigFactoryTest;
 import com.ctrip.framework.apollo.spi.DefaultConfigRegistryTest;
+import com.ctrip.framework.apollo.spring.BootstrapConfigTest;
 import com.ctrip.framework.apollo.spring.JavaConfigAnnotationTest;
 import com.ctrip.framework.apollo.spring.JavaConfigPlaceholderTest;
 import com.ctrip.framework.apollo.spring.XMLConfigAnnotationTest;
@@ -29,15 +28,13 @@ import com.ctrip.framework.apollo.util.parser.DateParserTest;
 import com.ctrip.framework.apollo.util.parser.DurationParserTest;
 
 @RunWith(Suite.class)
-@SuiteClasses({
-    ConfigServiceTest.class, DefaultConfigRegistryTest.class, DefaultConfigFactoryManagerTest.class,
-    DefaultConfigManagerTest.class, DefaultConfigTest.class, LocalFileConfigRepositoryTest.class,
-    RemoteConfigRepositoryTest.class, SimpleConfigTest.class, DefaultConfigFactoryTest.class,
-    ConfigIntegrationTest.class, ExceptionUtilTest.class, XmlConfigFileTest.class, PropertiesConfigFileTest.class,
-    RemoteConfigLongPollServiceTest.class, DateParserTest.class, DurationParserTest.class, JsonConfigFileTest.class,
-    XmlConfigPlaceholderTest.class, JavaConfigPlaceholderTest.class, XMLConfigAnnotationTest.class,
-    JavaConfigAnnotationTest.class, ConfigUtilTest.class, BootstrapConfigTest.class
-})
+@SuiteClasses({ ConfigServiceTest.class, DefaultConfigRegistryTest.class, DefaultConfigFactoryManagerTest.class,
+		DefaultConfigManagerTest.class, DefaultConfigTest.class, LocalFileConfigRepositoryTest.class,
+		RemoteConfigRepositoryTest.class, SimpleConfigTest.class, DefaultConfigFactoryTest.class,
+		ConfigIntegrationTest.class, ExceptionUtilTest.class, XmlConfigFileTest.class, PropertiesConfigFileTest.class,
+		RemoteConfigLongPollServiceTest.class, DateParserTest.class, DurationParserTest.class, JsonConfigFileTest.class,
+		XmlConfigPlaceholderTest.class, JavaConfigPlaceholderTest.class, XMLConfigAnnotationTest.class,
+		JavaConfigAnnotationTest.class, ConfigUtilTest.class, BootstrapConfigTest.class })
 public class AllTests {
 
 }

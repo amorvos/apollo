@@ -57,6 +57,32 @@ public class ApolloConfigDemo {
 		});
 	}
 
+	public static void main(String[] args) throws IOException {
+		ApolloConfigDemo apolloConfigDemo = new ApolloConfigDemo();
+		apolloConfigDemo.printEnvInfo();
+		System.out.println("Apollo Config Demo. Please input key to get the value.");
+		while (true) {
+			System.out.print("> ");
+			String input = new BufferedReader(new InputStreamReader(System.in, Charsets.UTF_8)).readLine();
+			if (input == null || input.length() == 0) {
+				continue;
+			}
+			input = input.trim();
+			if (input.equalsIgnoreCase("application")) {
+				apolloConfigDemo.print("application");
+				continue;
+			}
+			if (input.equalsIgnoreCase("xml")) {
+				apolloConfigDemo.print("xml");
+				continue;
+			}
+			if (input.equalsIgnoreCase("quit")) {
+				System.exit(0);
+			}
+			apolloConfigDemo.getConfig(input);
+		}
+	}
+
 	private String getConfig(String key) {
 		String result = config.getProperty(key, DEFAULT_VALUE);
 		if (DEFAULT_VALUE.equals(result)) {
@@ -91,31 +117,5 @@ public class ApolloConfigDemo {
 				Foundation.server().getEnvType(), Foundation.server().getDataCenter(),
 				Foundation.net().getHostAddress());
 		System.out.println(message);
-	}
-
-	public static void main(String[] args) throws IOException {
-		ApolloConfigDemo apolloConfigDemo = new ApolloConfigDemo();
-		apolloConfigDemo.printEnvInfo();
-		System.out.println("Apollo Config Demo. Please input key to get the value.");
-		while (true) {
-			System.out.print("> ");
-			String input = new BufferedReader(new InputStreamReader(System.in, Charsets.UTF_8)).readLine();
-			if (input == null || input.length() == 0) {
-				continue;
-			}
-			input = input.trim();
-			if (input.equalsIgnoreCase("application")) {
-				apolloConfigDemo.print("application");
-				continue;
-			}
-			if (input.equalsIgnoreCase("xml")) {
-				apolloConfigDemo.print("xml");
-				continue;
-			}
-			if (input.equalsIgnoreCase("quit")) {
-				System.exit(0);
-			}
-			apolloConfigDemo.getConfig(input);
-		}
 	}
 }

@@ -9,12 +9,12 @@ appService.service('ClusterService', ['$resource', '$q', function ($resource, $q
         create_cluster: function (appId, env, cluster) {
             var d = $q.defer();
             cluster_resource.create_cluster({
-                                                appId: appId,
-                                                env: env
-                                            }, cluster,
-                                            function (result) {
-                                                d.resolve(result);
-                                            }, function (result) {
+                    appId: appId,
+                    env: env
+                }, cluster,
+                function (result) {
+                    d.resolve(result);
+                }, function (result) {
                     d.reject(result);
                 });
             return d.promise;

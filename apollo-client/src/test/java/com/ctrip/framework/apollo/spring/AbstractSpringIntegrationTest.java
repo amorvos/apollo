@@ -20,58 +20,59 @@ import com.google.common.collect.Maps;
  * @author Jason Song(song_s@ctrip.com)
  */
 public abstract class AbstractSpringIntegrationTest {
-  private static final Map<String, Config> CONFIG_REGISTRY = Maps.newHashMap();
-  private static Method PROPERTY_SOURCES_PROCESSOR_CLEAR;
-  private static Method CONFIG_SERVICE_RESET;
+	private static final Map<String, Config> CONFIG_REGISTRY = Maps.newHashMap();
+	private static Method PROPERTY_SOURCES_PROCESSOR_CLEAR;
+	private static Method CONFIG_SERVICE_RESET;
 
-  static {
-    try {
-      PROPERTY_SOURCES_PROCESSOR_CLEAR = PropertySourcesProcessor.class.getDeclaredMethod("reset");
-      ReflectionUtils.makeAccessible(PROPERTY_SOURCES_PROCESSOR_CLEAR);
-      CONFIG_SERVICE_RESET = ConfigService.class.getDeclaredMethod("reset");
-      ReflectionUtils.makeAccessible(CONFIG_SERVICE_RESET);
-    } catch (NoSuchMethodException e) {
-      e.printStackTrace();
-    }
-  }
+	static {
+		try {
+			PROPERTY_SOURCES_PROCESSOR_CLEAR = PropertySourcesProcessor.class.getDeclaredMethod("reset");
+			ReflectionUtils.makeAccessible(PROPERTY_SOURCES_PROCESSOR_CLEAR);
+			CONFIG_SERVICE_RESET = ConfigService.class.getDeclaredMethod("reset");
+			ReflectionUtils.makeAccessible(CONFIG_SERVICE_RESET);
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		}
+	}
 
-  @Before
-  public void setUp() throws Exception {
-    doSetUp();
-  }
+	protected static void mockConfig(String namespace, Config config) {
+		CONFIG_REGISTRY.put(namespace, config);
+	}
 
-  @After
-  public void tearDown() throws Exception {
-    doTearDown();
-  }
+	protected static void doSetUp() {
+		// as PropertySourcesProcessor has some static states, so we must manually clear
+		// its state
+		ReflectionUtils.invokeMethod(PROPERTY_SOURCES_PROCESSOR_CLEAR, null);
+		// as ConfigService is singleton, so we must manually clear its container
+		ReflectionUtils.invokeMethod(CONFIG_SERVICE_RESET, null);
+		MockInjector.reset();
+		MockInjector.setInstance(ConfigManager.class, new MockConfigManager());
+	}
 
-  protected static void mockConfig(String namespace, Config config) {
-    CONFIG_REGISTRY.put(namespace, config);
-  }
+	protected static void doTearDown() {
+		CONFIG_REGISTRY.clear();
+	}
 
-  protected static void doSetUp() {
-    //as PropertySourcesProcessor has some static states, so we must manually clear its state
-    ReflectionUtils.invokeMethod(PROPERTY_SOURCES_PROCESSOR_CLEAR, null);
-    //as ConfigService is singleton, so we must manually clear its container
-    ReflectionUtils.invokeMethod(CONFIG_SERVICE_RESET, null);
-    MockInjector.reset();
-    MockInjector.setInstance(ConfigManager.class, new MockConfigManager());
-  }
+	@Before
+	public void setUp() throws Exception {
+		doSetUp();
+	}
 
-  protected static void doTearDown() {
-    CONFIG_REGISTRY.clear();
-  }
+	@After
+	public void tearDown() throws Exception {
+		doTearDown();
+	}
 
-  public static class MockConfigManager implements ConfigManager {
+	public static class MockConfigManager implements ConfigManager {
 
-    @Override
-    public Config getConfig(String namespace) {
-      return CONFIG_REGISTRY.get(namespace);
-    }
+		@Override
+		public Config getConfig(String namespace) {
+			return CONFIG_REGISTRY.get(namespace);
+		}
 
-    @Override
-    public ConfigFile getConfigFile(String namespace, ConfigFileFormat configFileFormat) {
-      return null;
-    }
-  }
+		@Override
+		public ConfigFile getConfigFile(String namespace, ConfigFileFormat configFileFormat) {
+			return null;
+		}
+	}
 }

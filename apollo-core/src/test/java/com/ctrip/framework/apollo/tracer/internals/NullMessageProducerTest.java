@@ -1,28 +1,28 @@
 package com.ctrip.framework.apollo.tracer.internals;
 
-import com.ctrip.framework.apollo.tracer.spi.MessageProducer;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import com.ctrip.framework.apollo.tracer.spi.MessageProducer;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
 public class NullMessageProducerTest {
-  private MessageProducer messageProducer;
+	private MessageProducer messageProducer;
 
-  @Before
-  public void setUp() throws Exception {
-    messageProducer = new NullMessageProducer();
-  }
+	@Before
+	public void setUp() throws Exception {
+		messageProducer = new NullMessageProducer();
+	}
 
-  @Test
-  public void testNewTransaction() throws Exception {
-    String someType = "someType";
-    String someName = "someName";
-    assertTrue(messageProducer.newTransaction(someType, someName) instanceof NullTransaction);
-  }
+	@Test
+	public void testNewTransaction() throws Exception {
+		String someType = "someType";
+		String someName = "someName";
+		assertTrue(messageProducer.newTransaction(someType, someName) instanceof NullTransaction);
+	}
 
 }

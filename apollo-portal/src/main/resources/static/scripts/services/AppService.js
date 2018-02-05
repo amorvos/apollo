@@ -52,10 +52,10 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
         find_app_by_owner: function (owner, page, size) {
             var d = $q.defer();
             app_resource.find_app_by_owner({
-                                               owner: owner,
-                                               page: page,
-                                               size: size
-                                           }, function (result) {
+                owner: owner,
+                page: page,
+                size: size
+            }, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);
@@ -65,8 +65,8 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
         load_nav_tree: function (appId) {
             var d = $q.defer();
             app_resource.load_navtree({
-                                          appId: appId
-                                      }, function (result) {
+                appId: appId
+            }, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);
@@ -85,8 +85,8 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
         update: function (app) {
             var d = $q.defer();
             app_resource.update_app({
-                                        appId: app.appId
-                                    }, app, function (result) {
+                appId: app.appId
+            }, app, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);
@@ -105,8 +105,8 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
         load: function (appId) {
             var d = $q.defer();
             app_resource.load_app({
-                                      appId: appId
-                                  }, function (result) {
+                appId: appId
+            }, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);
@@ -116,8 +116,8 @@ appService.service('AppService', ['$resource', '$q', function ($resource, $q) {
         find_miss_envs: function (appId) {
             var d = $q.defer();
             app_resource.find_miss_envs({
-                                            appId: appId
-                                        }, function (result) {
+                appId: appId
+            }, function (result) {
                 d.resolve(result);
             }, function (result) {
                 d.reject(result);

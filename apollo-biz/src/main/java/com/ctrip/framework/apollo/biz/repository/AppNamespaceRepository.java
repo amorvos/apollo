@@ -1,27 +1,26 @@
 package com.ctrip.framework.apollo.biz.repository;
 
-import com.ctrip.framework.apollo.common.entity.AppNamespace;
-
-import org.springframework.data.repository.PagingAndSortingRepository;
-
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface AppNamespaceRepository extends PagingAndSortingRepository<AppNamespace, Long>{
+import com.ctrip.framework.apollo.common.entity.AppNamespace;
 
-  AppNamespace findByAppIdAndName(String appId, String namespaceName);
+public interface AppNamespaceRepository extends PagingAndSortingRepository<AppNamespace, Long> {
 
-  List<AppNamespace> findByAppIdAndNameIn(String appId, Set<String> namespaceNames);
+	AppNamespace findByAppIdAndName(String appId, String namespaceName);
 
-  AppNamespace findByNameAndIsPublicTrue(String namespaceName);
+	List<AppNamespace> findByAppIdAndNameIn(String appId, Set<String> namespaceNames);
 
-  List<AppNamespace> findByNameInAndIsPublicTrue(Set<String> namespaceNames);
+	AppNamespace findByNameAndIsPublicTrue(String namespaceName);
 
-  List<AppNamespace> findByAppIdAndIsPublic(String appId, boolean isPublic);
+	List<AppNamespace> findByNameInAndIsPublicTrue(Set<String> namespaceNames);
 
-  List<AppNamespace> findByAppId(String appId);
+	List<AppNamespace> findByAppIdAndIsPublic(String appId, boolean isPublic);
 
-  List<AppNamespace> findFirst500ByIdGreaterThanOrderByIdAsc(long id);
+	List<AppNamespace> findByAppId(String appId);
+
+	List<AppNamespace> findFirst500ByIdGreaterThanOrderByIdAsc(long id);
 
 }

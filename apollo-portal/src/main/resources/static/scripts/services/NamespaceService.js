@@ -43,8 +43,8 @@ appService.service("NamespaceService", ['$resource', '$q', function ($resource, 
     function createNamespace(appId, namespaceCreationModel) {
         var d = $q.defer();
         namespace_source.createNamespace({
-                                             appId: appId
-                                         }, namespaceCreationModel, function (result) {
+            appId: appId
+        }, namespaceCreationModel, function (result) {
             d.resolve(result);
         }, function (result) {
             d.reject(result);
@@ -55,8 +55,8 @@ appService.service("NamespaceService", ['$resource', '$q', function ($resource, 
     function createAppNamespace(appId, appnamespace) {
         var d = $q.defer();
         namespace_source.createAppNamespace({
-                                                appId: appId
-                                            }, appnamespace, function (result) {
+            appId: appId
+        }, appnamespace, function (result) {
             d.resolve(result);
         }, function (result) {
             d.reject(result);
@@ -67,8 +67,8 @@ appService.service("NamespaceService", ['$resource', '$q', function ($resource, 
     function getNamespacePublishInfo(appId) {
         var d = $q.defer();
         namespace_source.getNamespacePublishInfo({
-                                                     appId: appId
-                                                 }, function (result) {
+            appId: appId
+        }, function (result) {
             d.resolve(result);
         }, function (result) {
             d.reject(result);
@@ -80,17 +80,17 @@ appService.service("NamespaceService", ['$resource', '$q', function ($resource, 
     function deleteNamespace(appId, env, clusterName, namespaceName) {
         var d = $q.defer();
         namespace_source.deleteNamespace({
-                                             appId: appId,
-                                             env: env,
-                                             clusterName: clusterName,
-                                             namespaceName: namespaceName
-                                         },
-                                         function (result) {
-                                             d.resolve(result);
-                                         },
-                                         function (result) {
-                                             d.reject(result);
-                                         });
+                appId: appId,
+                env: env,
+                clusterName: clusterName,
+                namespaceName: namespaceName
+            },
+            function (result) {
+                d.resolve(result);
+            },
+            function (result) {
+                d.reject(result);
+            });
 
         return d.promise;
     }
@@ -98,11 +98,11 @@ appService.service("NamespaceService", ['$resource', '$q', function ($resource, 
     function getPublicAppNamespaceAllNamespaces(env, publicNamespaceName, page, size) {
         var d = $q.defer();
         namespace_source.getPublicAppNamespaceAllNamespaces({
-                                                                env: env,
-                                                                publicNamespaceName: publicNamespaceName,
-                                                                page: page,
-                                                                size: size
-                                                            }, function (result) {
+            env: env,
+            publicNamespaceName: publicNamespaceName,
+            page: page,
+            size: size
+        }, function (result) {
             d.resolve(result);
         }, function (result) {
             d.reject(result);

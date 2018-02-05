@@ -1,59 +1,59 @@
 package com.ctrip.framework.apollo.biz.repository;
 
-import com.ctrip.framework.apollo.biz.AbstractIntegrationTest;
-import com.ctrip.framework.apollo.common.entity.App;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class AppRepositoryTest extends AbstractIntegrationTest{
+import com.ctrip.framework.apollo.biz.AbstractIntegrationTest;
+import com.ctrip.framework.apollo.common.entity.App;
 
-  @Autowired
-  private AppRepository appRepository;
+public class AppRepositoryTest extends AbstractIntegrationTest {
 
-  @Test
-  public void testCreate() {
-    String appId = "someAppId";
-    String appName = "someAppName";
-    String ownerName = "someOwnerName";
-    String ownerEmail = "someOwnerName@ctrip.com";
+	@Autowired
+	private AppRepository appRepository;
 
-    App app = new App();
-    app.setAppId(appId);
-    app.setName(appName);
-    app.setOwnerName(ownerName);
-    app.setOwnerEmail(ownerEmail);
+	@Test
+	public void testCreate() {
+		String appId = "someAppId";
+		String appName = "someAppName";
+		String ownerName = "someOwnerName";
+		String ownerEmail = "someOwnerName@ctrip.com";
 
-    Assert.assertEquals(0, appRepository.count());
+		App app = new App();
+		app.setAppId(appId);
+		app.setName(appName);
+		app.setOwnerName(ownerName);
+		app.setOwnerEmail(ownerEmail);
 
-    appRepository.save(app);
+		Assert.assertEquals(0, appRepository.count());
 
-    Assert.assertEquals(1, appRepository.count());
-  }
+		appRepository.save(app);
 
-  @Test
-  public void testRemove() {
-    String appId = "someAppId";
-    String appName = "someAppName";
-    String ownerName = "someOwnerName";
-    String ownerEmail = "someOwnerName@ctrip.com";
+		Assert.assertEquals(1, appRepository.count());
+	}
 
-    App app = new App();
-    app.setAppId(appId);
-    app.setName(appName);
-    app.setOwnerName(ownerName);
-    app.setOwnerEmail(ownerEmail);
+	@Test
+	public void testRemove() {
+		String appId = "someAppId";
+		String appName = "someAppName";
+		String ownerName = "someOwnerName";
+		String ownerEmail = "someOwnerName@ctrip.com";
 
-    Assert.assertEquals(0, appRepository.count());
+		App app = new App();
+		app.setAppId(appId);
+		app.setName(appName);
+		app.setOwnerName(ownerName);
+		app.setOwnerEmail(ownerEmail);
 
-    appRepository.save(app);
+		Assert.assertEquals(0, appRepository.count());
 
-    Assert.assertEquals(1, appRepository.count());
+		appRepository.save(app);
 
-    appRepository.delete(app.getId());
+		Assert.assertEquals(1, appRepository.count());
 
-    Assert.assertEquals(0, appRepository.count());
-  }
+		appRepository.delete(app.getId());
+
+		Assert.assertEquals(0, appRepository.count());
+	}
 
 }

@@ -1,6 +1,6 @@
 package com.ctrip.framework.apollo.adminservice.controller;
 
-import com.ctrip.framework.apollo.AdminServiceTestConfiguration;
+import javax.annotation.PostConstruct;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,24 +13,22 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.PostConstruct;
+import com.ctrip.framework.apollo.AdminServiceTestConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = AdminServiceTestConfiguration.class)
 @WebIntegrationTest(randomPort = true)
 public abstract class AbstractControllerTest {
 
-  @Autowired
-  private HttpMessageConverters httpMessageConverters;
-  
-  RestTemplate restTemplate = new TestRestTemplate();
+	RestTemplate restTemplate = new TestRestTemplate();
+	@Value("${local.server.port}")
+	int port;
+	@Autowired
+	private HttpMessageConverters httpMessageConverters;
 
-  @PostConstruct
-  private void postConstruct() {
-    restTemplate.setErrorHandler(new DefaultResponseErrorHandler());
-    restTemplate.setMessageConverters(httpMessageConverters.getConverters());
-  }
-
-  @Value("${local.server.port}")
-  int port;
+	@PostConstruct
+	private void postConstruct() {
+		restTemplate.setErrorHandler(new DefaultResponseErrorHandler());
+		restTemplate.setMessageConverters(httpMessageConverters.getConverters());
+	}
 }

@@ -1,8 +1,8 @@
 package com.ctrip.framework.apollo.openapi.repository;
 
-import com.ctrip.framework.apollo.openapi.entity.ConsumerAudit;
-
 import org.springframework.data.repository.PagingAndSortingRepository;
+
+import com.ctrip.framework.apollo.openapi.entity.ConsumerAudit;
 
 /**
  * @author Jason Song(song_s@ctrip.com)

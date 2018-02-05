@@ -10,24 +10,24 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class BeanRegistrationUtil {
-  public static boolean registerBeanDefinitionIfNotExists(BeanDefinitionRegistry registry, String beanName,
-                                                          Class<?> beanClass) {
-    if (registry.containsBeanDefinition(beanName)) {
-      return false;
-    }
+	public static boolean registerBeanDefinitionIfNotExists(BeanDefinitionRegistry registry, String beanName,
+			Class<?> beanClass) {
+		if (registry.containsBeanDefinition(beanName)) {
+			return false;
+		}
 
-    String[] candidates = registry.getBeanDefinitionNames();
+		String[] candidates = registry.getBeanDefinitionNames();
 
-    for (String candidate : candidates) {
-      BeanDefinition beanDefinition = registry.getBeanDefinition(candidate);
-      if (Objects.equals(beanDefinition.getBeanClassName(), beanClass.getName())) {
-        return false;
-      }
-    }
+		for (String candidate : candidates) {
+			BeanDefinition beanDefinition = registry.getBeanDefinition(candidate);
+			if (Objects.equals(beanDefinition.getBeanClassName(), beanClass.getName())) {
+				return false;
+			}
+		}
 
-    BeanDefinition annotationProcessor = BeanDefinitionBuilder.genericBeanDefinition(beanClass).getBeanDefinition();
-    registry.registerBeanDefinition(beanName, annotationProcessor);
+		BeanDefinition annotationProcessor = BeanDefinitionBuilder.genericBeanDefinition(beanClass).getBeanDefinition();
+		registry.registerBeanDefinition(beanName, annotationProcessor);
 
-    return true;
-  }
+		return true;
+	}
 }

@@ -35,670 +35,652 @@ import com.google.common.util.concurrent.SettableFuture;
  * @author Jason Song(song_s@ctrip.com)
  */
 public class DefaultConfigTest {
-  private File someResourceDir;
-  private String someNamespace;
-  private ConfigRepository configRepository;
-  private Properties someProperties;
-
-  @Before
-  public void setUp() throws Exception {
-    MockInjector.reset();
-    MockInjector.setInstance(ConfigUtil.class, new MockConfigUtil());
-
-    someResourceDir = new File(ClassLoaderUtil.getClassPath() + "/META-INF/config");
-    someResourceDir.mkdirs();
-    someNamespace = "someName";
-    configRepository = mock(ConfigRepository.class);
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    recursiveDelete(someResourceDir);
-  }
-
-  //helper method to clean created files
-  private void recursiveDelete(File file) {
-    if (!file.exists()) {
-      return;
-    }
-    if (file.isDirectory()) {
-      for (File f : file.listFiles()) {
-        recursiveDelete(f);
-      }
-    }
-    file.delete();
-  }
-
-  @Test
-  public void testGetPropertyWithAllPropertyHierarchy() throws Exception {
-    String someKey = "someKey";
-    String someSystemPropertyValue = "system-property-value";
-
-    String anotherKey = "anotherKey";
-    String someLocalFileValue = "local-file-value";
-
-    String lastKey = "lastKey";
-    String someResourceValue = "resource-value";
-
-    //set up system property
-    System.setProperty(someKey, someSystemPropertyValue);
-
-    //set up config repo
-    someProperties = new Properties();
-    someProperties.setProperty(someKey, someLocalFileValue);
-    someProperties.setProperty(anotherKey, someLocalFileValue);
-    when(configRepository.getConfig()).thenReturn(someProperties);
-
-    //set up resource file
-    File resourceFile = new File(someResourceDir, someNamespace + ".properties");
-    Files.write(someKey + "=" + someResourceValue, resourceFile, Charsets.UTF_8);
-    Files.append(System.getProperty("line.separator"), resourceFile, Charsets.UTF_8);
-    Files.append(anotherKey + "=" + someResourceValue, resourceFile, Charsets.UTF_8);
-    Files.append(System.getProperty("line.separator"), resourceFile, Charsets.UTF_8);
-    Files.append(lastKey + "=" + someResourceValue, resourceFile, Charsets.UTF_8);
-
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
-
-    String someKeyValue = defaultConfig.getProperty(someKey, null);
-    String anotherKeyValue = defaultConfig.getProperty(anotherKey, null);
-    String lastKeyValue = defaultConfig.getProperty(lastKey, null);
-
-    //clean up
-    System.clearProperty(someKey);
-
-    assertEquals(someSystemPropertyValue, someKeyValue);
-    assertEquals(someLocalFileValue, anotherKeyValue);
-    assertEquals(someResourceValue, lastKeyValue);
+	private File someResourceDir;
+	private String someNamespace;
+	private ConfigRepository configRepository;
+	private Properties someProperties;
+
+	@Before
+	public void setUp() throws Exception {
+		MockInjector.reset();
+		MockInjector.setInstance(ConfigUtil.class, new MockConfigUtil());
+
+		someResourceDir = new File(ClassLoaderUtil.getClassPath() + "/META-INF/config");
+		someResourceDir.mkdirs();
+		someNamespace = "someName";
+		configRepository = mock(ConfigRepository.class);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		recursiveDelete(someResourceDir);
+	}
+
+	// helper method to clean created files
+	private void recursiveDelete(File file) {
+		if (!file.exists()) {
+			return;
+		}
+		if (file.isDirectory()) {
+			for (File f : file.listFiles()) {
+				recursiveDelete(f);
+			}
+		}
+		file.delete();
+	}
+
+	@Test
+	public void testGetPropertyWithAllPropertyHierarchy() throws Exception {
+		String someKey = "someKey";
+		String someSystemPropertyValue = "system-property-value";
+
+		String anotherKey = "anotherKey";
+		String someLocalFileValue = "local-file-value";
+
+		String lastKey = "lastKey";
+		String someResourceValue = "resource-value";
+
+		// set up system property
+		System.setProperty(someKey, someSystemPropertyValue);
+
+		// set up config repo
+		someProperties = new Properties();
+		someProperties.setProperty(someKey, someLocalFileValue);
+		someProperties.setProperty(anotherKey, someLocalFileValue);
+		when(configRepository.getConfig()).thenReturn(someProperties);
+
+		// set up resource file
+		File resourceFile = new File(someResourceDir, someNamespace + ".properties");
+		Files.write(someKey + "=" + someResourceValue, resourceFile, Charsets.UTF_8);
+		Files.append(System.getProperty("line.separator"), resourceFile, Charsets.UTF_8);
+		Files.append(anotherKey + "=" + someResourceValue, resourceFile, Charsets.UTF_8);
+		Files.append(System.getProperty("line.separator"), resourceFile, Charsets.UTF_8);
+		Files.append(lastKey + "=" + someResourceValue, resourceFile, Charsets.UTF_8);
+
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-  }
-
-  @Test
-  public void testGetIntProperty() throws Exception {
-    String someStringKey = "someStringKey";
-    String someStringValue = "someStringValue";
+		String someKeyValue = defaultConfig.getProperty(someKey, null);
+		String anotherKeyValue = defaultConfig.getProperty(anotherKey, null);
+		String lastKeyValue = defaultConfig.getProperty(lastKey, null);
 
-    String someKey = "someKey";
-    Integer someValue = 2;
+		// clean up
+		System.clearProperty(someKey);
 
-    Integer someDefaultValue = -1;
+		assertEquals(someSystemPropertyValue, someKeyValue);
+		assertEquals(someLocalFileValue, anotherKeyValue);
+		assertEquals(someResourceValue, lastKeyValue);
 
-    //set up config repo
-    someProperties = new Properties();
-    someProperties.setProperty(someStringKey, someStringValue);
-    someProperties.setProperty(someKey, String.valueOf(someValue));
-    when(configRepository.getConfig()).thenReturn(someProperties);
+	}
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+	@Test
+	public void testGetIntProperty() throws Exception {
+		String someStringKey = "someStringKey";
+		String someStringValue = "someStringValue";
 
-    assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
-    assertEquals(someDefaultValue, defaultConfig.getIntProperty(someStringKey, someDefaultValue));
-  }
+		String someKey = "someKey";
+		Integer someValue = 2;
 
-  @Test
-  public void testGetIntPropertyMultipleTimesWithCache() throws Exception {
-    String someKey = "someKey";
-    Integer someValue = 2;
+		Integer someDefaultValue = -1;
 
-    Integer someDefaultValue = -1;
+		// set up config repo
+		someProperties = new Properties();
+		someProperties.setProperty(someStringKey, someStringValue);
+		someProperties.setProperty(someKey, String.valueOf(someValue));
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    //set up config repo
-    someProperties = mock(Properties.class);
-    when(someProperties.getProperty(someKey)).thenReturn(String.valueOf(someValue));
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+		assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
+		assertEquals(someDefaultValue, defaultConfig.getIntProperty(someStringKey, someDefaultValue));
+	}
 
-    assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
-    assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
-    assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
+	@Test
+	public void testGetIntPropertyMultipleTimesWithCache() throws Exception {
+		String someKey = "someKey";
+		Integer someValue = 2;
 
-    verify(someProperties, times(1)).getProperty(someKey);
-  }
+		Integer someDefaultValue = -1;
 
-  @Test
-  public void testGetIntPropertyMultipleTimesWithPropertyChanges() throws Exception {
-    String someKey = "someKey";
-    Integer someValue = 2;
-    Integer anotherValue = 3;
+		// set up config repo
+		someProperties = mock(Properties.class);
+		when(someProperties.getProperty(someKey)).thenReturn(String.valueOf(someValue));
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    Integer someDefaultValue = -1;
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-    //set up config repo
-    someProperties = new Properties();
-    someProperties.setProperty(someKey, String.valueOf(someValue));
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
+		assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
+		assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+		verify(someProperties, times(1)).getProperty(someKey);
+	}
 
-    assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
+	@Test
+	public void testGetIntPropertyMultipleTimesWithPropertyChanges() throws Exception {
+		String someKey = "someKey";
+		Integer someValue = 2;
+		Integer anotherValue = 3;
 
-    Properties anotherProperties = new Properties();
-    anotherProperties.setProperty(someKey, String.valueOf(anotherValue));
+		Integer someDefaultValue = -1;
 
-    defaultConfig.onRepositoryChange(someNamespace, anotherProperties);
+		// set up config repo
+		someProperties = new Properties();
+		someProperties.setProperty(someKey, String.valueOf(someValue));
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    assertEquals(anotherValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
-  }
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-  @Test
-  public void testGetIntPropertyMultipleTimesWithSmallCache() throws Exception {
-    String someKey = "someKey";
-    Integer someValue = 2;
+		assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
 
-    String anotherKey = "anotherKey";
-    Integer anotherValue = 3;
+		Properties anotherProperties = new Properties();
+		anotherProperties.setProperty(someKey, String.valueOf(anotherValue));
 
-    Integer someDefaultValue = -1;
+		defaultConfig.onRepositoryChange(someNamespace, anotherProperties);
 
-    MockInjector.setInstance(ConfigUtil.class, new MockConfigUtilWithSmallCache());
+		assertEquals(anotherValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
+	}
 
-    //set up config repo
-    someProperties = mock(Properties.class);
-    when(someProperties.getProperty(someKey)).thenReturn(String.valueOf(someValue));
-    when(someProperties.getProperty(anotherKey)).thenReturn(String.valueOf(anotherValue));
-    when(configRepository.getConfig()).thenReturn(someProperties);
+	@Test
+	public void testGetIntPropertyMultipleTimesWithSmallCache() throws Exception {
+		String someKey = "someKey";
+		Integer someValue = 2;
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+		String anotherKey = "anotherKey";
+		Integer anotherValue = 3;
 
-    assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
-    assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
+		Integer someDefaultValue = -1;
 
-    verify(someProperties, times(1)).getProperty(someKey);
+		MockInjector.setInstance(ConfigUtil.class, new MockConfigUtilWithSmallCache());
 
-    assertEquals(anotherValue, defaultConfig.getIntProperty(anotherKey, someDefaultValue));
-    assertEquals(anotherValue, defaultConfig.getIntProperty(anotherKey, someDefaultValue));
+		// set up config repo
+		someProperties = mock(Properties.class);
+		when(someProperties.getProperty(someKey)).thenReturn(String.valueOf(someValue));
+		when(someProperties.getProperty(anotherKey)).thenReturn(String.valueOf(anotherValue));
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    verify(someProperties, times(1)).getProperty(anotherKey);
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-    assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
+		assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
+		assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
 
-    verify(someProperties, times(2)).getProperty(someKey);
-  }
+		verify(someProperties, times(1)).getProperty(someKey);
 
-  @Test
-  public void testGetIntPropertyMultipleTimesWithShortExpireTime() throws Exception {
-    String someKey = "someKey";
-    Integer someValue = 2;
+		assertEquals(anotherValue, defaultConfig.getIntProperty(anotherKey, someDefaultValue));
+		assertEquals(anotherValue, defaultConfig.getIntProperty(anotherKey, someDefaultValue));
 
-    Integer someDefaultValue = -1;
+		verify(someProperties, times(1)).getProperty(anotherKey);
 
-    MockInjector.setInstance(ConfigUtil.class, new MockConfigUtilWithShortExpireTime());
+		assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
 
-    //set up config repo
-    someProperties = mock(Properties.class);
-    when(someProperties.getProperty(someKey)).thenReturn(String.valueOf(someValue));
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		verify(someProperties, times(2)).getProperty(someKey);
+	}
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+	@Test
+	public void testGetIntPropertyMultipleTimesWithShortExpireTime() throws Exception {
+		String someKey = "someKey";
+		Integer someValue = 2;
 
-    assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
-    assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
+		Integer someDefaultValue = -1;
 
-    verify(someProperties, times(1)).getProperty(someKey);
+		MockInjector.setInstance(ConfigUtil.class, new MockConfigUtilWithShortExpireTime());
 
-    TimeUnit.MILLISECONDS.sleep(50);
+		// set up config repo
+		someProperties = mock(Properties.class);
+		when(someProperties.getProperty(someKey)).thenReturn(String.valueOf(someValue));
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
-    assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-    verify(someProperties, times(2)).getProperty(someKey);
-  }
+		assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
+		assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
 
-  @Test
-  public void testGetLongProperty() throws Exception {
-    String someStringKey = "someStringKey";
-    String someStringValue = "someStringValue";
+		verify(someProperties, times(1)).getProperty(someKey);
 
-    String someKey = "someKey";
-    Long someValue = 2l;
+		TimeUnit.MILLISECONDS.sleep(50);
 
-    Long someDefaultValue = -1l;
+		assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
+		assertEquals(someValue, defaultConfig.getIntProperty(someKey, someDefaultValue));
 
-    //set up config repo
-    someProperties = new Properties();
-    someProperties.setProperty(someStringKey, someStringValue);
-    someProperties.setProperty(someKey, String.valueOf(someValue));
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		verify(someProperties, times(2)).getProperty(someKey);
+	}
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+	@Test
+	public void testGetLongProperty() throws Exception {
+		String someStringKey = "someStringKey";
+		String someStringValue = "someStringValue";
 
-    assertEquals(someValue, defaultConfig.getLongProperty(someKey, someDefaultValue));
-    assertEquals(someDefaultValue, defaultConfig.getLongProperty(someStringKey, someDefaultValue));
-  }
+		String someKey = "someKey";
+		Long someValue = 2l;
 
-  @Test
-  public void testGetShortProperty() throws Exception {
-    String someStringKey = "someStringKey";
-    String someStringValue = "someStringValue";
+		Long someDefaultValue = -1l;
 
-    String someKey = "someKey";
-    Short someValue = 2;
+		// set up config repo
+		someProperties = new Properties();
+		someProperties.setProperty(someStringKey, someStringValue);
+		someProperties.setProperty(someKey, String.valueOf(someValue));
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    Short someDefaultValue = -1;
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-    //set up config repo
-    someProperties = new Properties();
-    someProperties.setProperty(someStringKey, someStringValue);
-    someProperties.setProperty(someKey, String.valueOf(someValue));
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		assertEquals(someValue, defaultConfig.getLongProperty(someKey, someDefaultValue));
+		assertEquals(someDefaultValue, defaultConfig.getLongProperty(someStringKey, someDefaultValue));
+	}
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+	@Test
+	public void testGetShortProperty() throws Exception {
+		String someStringKey = "someStringKey";
+		String someStringValue = "someStringValue";
 
-    assertEquals(someValue, defaultConfig.getShortProperty(someKey, someDefaultValue));
-    assertEquals(someDefaultValue, defaultConfig.getShortProperty(someStringKey, someDefaultValue));
-  }
+		String someKey = "someKey";
+		Short someValue = 2;
 
-  @Test
-  public void testGetFloatProperty() throws Exception {
-    String someStringKey = "someStringKey";
-    String someStringValue = "someStringValue";
+		Short someDefaultValue = -1;
 
-    String someKey = "someKey";
-    Float someValue = 2.20f;
+		// set up config repo
+		someProperties = new Properties();
+		someProperties.setProperty(someStringKey, someStringValue);
+		someProperties.setProperty(someKey, String.valueOf(someValue));
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    Float someDefaultValue = -1f;
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-    //set up config repo
-    someProperties = new Properties();
-    someProperties.setProperty(someStringKey, someStringValue);
-    someProperties.setProperty(someKey, String.valueOf(someValue));
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		assertEquals(someValue, defaultConfig.getShortProperty(someKey, someDefaultValue));
+		assertEquals(someDefaultValue, defaultConfig.getShortProperty(someStringKey, someDefaultValue));
+	}
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+	@Test
+	public void testGetFloatProperty() throws Exception {
+		String someStringKey = "someStringKey";
+		String someStringValue = "someStringValue";
 
-    assertEquals(someValue, defaultConfig.getFloatProperty(someKey, someDefaultValue), 0.001);
-    assertEquals(someDefaultValue, defaultConfig.getFloatProperty(someStringKey, someDefaultValue), 0.001);
-  }
+		String someKey = "someKey";
+		Float someValue = 2.20f;
 
-  @Test
-  public void testGetDoubleProperty() throws Exception {
-    String someStringKey = "someStringKey";
-    String someStringValue = "someStringValue";
+		Float someDefaultValue = -1f;
 
-    String someKey = "someKey";
-    Double someValue = 2.20d;
+		// set up config repo
+		someProperties = new Properties();
+		someProperties.setProperty(someStringKey, someStringValue);
+		someProperties.setProperty(someKey, String.valueOf(someValue));
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    Double someDefaultValue = -1d;
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-    //set up config repo
-    someProperties = new Properties();
-    someProperties.setProperty(someStringKey, someStringValue);
-    someProperties.setProperty(someKey, String.valueOf(someValue));
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		assertEquals(someValue, defaultConfig.getFloatProperty(someKey, someDefaultValue), 0.001);
+		assertEquals(someDefaultValue, defaultConfig.getFloatProperty(someStringKey, someDefaultValue), 0.001);
+	}
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+	@Test
+	public void testGetDoubleProperty() throws Exception {
+		String someStringKey = "someStringKey";
+		String someStringValue = "someStringValue";
 
-    assertEquals(someValue, defaultConfig.getDoubleProperty(someKey, someDefaultValue), 0.001);
-    assertEquals(someDefaultValue, defaultConfig.getDoubleProperty(someStringKey, someDefaultValue), 0.001);
-  }
+		String someKey = "someKey";
+		Double someValue = 2.20d;
 
-  @Test
-  public void testGetByteProperty() throws Exception {
-    String someStringKey = "someStringKey";
-    String someStringValue = "someStringValue";
+		Double someDefaultValue = -1d;
 
-    String someKey = "someKey";
-    Byte someValue = 10;
+		// set up config repo
+		someProperties = new Properties();
+		someProperties.setProperty(someStringKey, someStringValue);
+		someProperties.setProperty(someKey, String.valueOf(someValue));
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    Byte someDefaultValue = -1;
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-    //set up config repo
-    someProperties = new Properties();
-    someProperties.setProperty(someStringKey, someStringValue);
-    someProperties.setProperty(someKey, String.valueOf(someValue));
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		assertEquals(someValue, defaultConfig.getDoubleProperty(someKey, someDefaultValue), 0.001);
+		assertEquals(someDefaultValue, defaultConfig.getDoubleProperty(someStringKey, someDefaultValue), 0.001);
+	}
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+	@Test
+	public void testGetByteProperty() throws Exception {
+		String someStringKey = "someStringKey";
+		String someStringValue = "someStringValue";
 
-    assertEquals(someValue, defaultConfig.getByteProperty(someKey, someDefaultValue));
-    assertEquals(someDefaultValue, defaultConfig.getByteProperty(someStringKey, someDefaultValue));
-  }
+		String someKey = "someKey";
+		Byte someValue = 10;
 
-  @Test
-  public void testGetBooleanProperty() throws Exception {
-    String someStringKey = "someStringKey";
-    String someStringValue = "someStringValue";
+		Byte someDefaultValue = -1;
 
-    String someKey = "someKey";
-    Boolean someValue = true;
+		// set up config repo
+		someProperties = new Properties();
+		someProperties.setProperty(someStringKey, someStringValue);
+		someProperties.setProperty(someKey, String.valueOf(someValue));
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    Boolean someDefaultValue = false;
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-    //set up config repo
-    someProperties = new Properties();
-    someProperties.setProperty(someStringKey, someStringValue);
-    someProperties.setProperty(someKey, String.valueOf(someValue));
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		assertEquals(someValue, defaultConfig.getByteProperty(someKey, someDefaultValue));
+		assertEquals(someDefaultValue, defaultConfig.getByteProperty(someStringKey, someDefaultValue));
+	}
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+	@Test
+	public void testGetBooleanProperty() throws Exception {
+		String someStringKey = "someStringKey";
+		String someStringValue = "someStringValue";
 
-    assertEquals(someValue, defaultConfig.getBooleanProperty(someKey, someDefaultValue));
-    assertEquals(someDefaultValue, defaultConfig.getBooleanProperty(someStringKey, someDefaultValue));
-  }
+		String someKey = "someKey";
+		Boolean someValue = true;
 
-  @Test
-  public void testGetArrayProperty() throws Exception {
-    String someKey = "someKey";
-    String someDelimiter = ",";
-    String someInvalidDelimiter = "{";
+		Boolean someDefaultValue = false;
 
-    String[] values = new String[]{"a", "b", "c"};
-    String someValue = Joiner.on(someDelimiter).join(values);
+		// set up config repo
+		someProperties = new Properties();
+		someProperties.setProperty(someStringKey, someStringValue);
+		someProperties.setProperty(someKey, String.valueOf(someValue));
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    String[] someDefaultValue = new String[]{"1", "2"};
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-    //set up config repo
-    someProperties = new Properties();
-    someProperties.setProperty(someKey, someValue);
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		assertEquals(someValue, defaultConfig.getBooleanProperty(someKey, someDefaultValue));
+		assertEquals(someDefaultValue, defaultConfig.getBooleanProperty(someStringKey, someDefaultValue));
+	}
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+	@Test
+	public void testGetArrayProperty() throws Exception {
+		String someKey = "someKey";
+		String someDelimiter = ",";
+		String someInvalidDelimiter = "{";
 
-    assertArrayEquals(values, defaultConfig.getArrayProperty(someKey, someDelimiter, someDefaultValue));
-    assertArrayEquals(someDefaultValue, defaultConfig.getArrayProperty(someKey, someInvalidDelimiter,
-        someDefaultValue));
-  }
+		String[] values = new String[] { "a", "b", "c" };
+		String someValue = Joiner.on(someDelimiter).join(values);
 
-  @Test
-  public void testGetArrayPropertyMultipleTimesWithCache() throws Exception {
-    String someKey = "someKey";
-    String someDelimiter = ",";
-    String someInvalidDelimiter = "{";
+		String[] someDefaultValue = new String[] { "1", "2" };
 
-    String[] values = new String[]{"a", "b", "c"};
-    String someValue = Joiner.on(someDelimiter).join(values);
+		// set up config repo
+		someProperties = new Properties();
+		someProperties.setProperty(someKey, someValue);
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    String[] someDefaultValue = new String[]{"1", "2"};
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-    //set up config repo
-    someProperties = mock(Properties.class);
-    when(someProperties.getProperty(someKey)).thenReturn(someValue);
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		assertArrayEquals(values, defaultConfig.getArrayProperty(someKey, someDelimiter, someDefaultValue));
+		assertArrayEquals(someDefaultValue,
+				defaultConfig.getArrayProperty(someKey, someInvalidDelimiter, someDefaultValue));
+	}
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+	@Test
+	public void testGetArrayPropertyMultipleTimesWithCache() throws Exception {
+		String someKey = "someKey";
+		String someDelimiter = ",";
+		String someInvalidDelimiter = "{";
 
-    assertArrayEquals(values, defaultConfig.getArrayProperty(someKey, someDelimiter, someDefaultValue));
-    assertArrayEquals(values, defaultConfig.getArrayProperty(someKey, someDelimiter, someDefaultValue));
+		String[] values = new String[] { "a", "b", "c" };
+		String someValue = Joiner.on(someDelimiter).join(values);
 
-    verify(someProperties, times(1)).getProperty(someKey);
+		String[] someDefaultValue = new String[] { "1", "2" };
 
-    assertArrayEquals(someDefaultValue, defaultConfig.getArrayProperty(someKey, someInvalidDelimiter,
-        someDefaultValue));
-    assertArrayEquals(someDefaultValue, defaultConfig.getArrayProperty(someKey, someInvalidDelimiter,
-        someDefaultValue));
+		// set up config repo
+		someProperties = mock(Properties.class);
+		when(someProperties.getProperty(someKey)).thenReturn(someValue);
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    verify(someProperties, times(3)).getProperty(someKey);
-  }
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-  @Test
-  public void testGetArrayPropertyMultipleTimesWithCacheAndValueChanges() throws Exception {
-    String someKey = "someKey";
-    String someDelimiter = ",";
+		assertArrayEquals(values, defaultConfig.getArrayProperty(someKey, someDelimiter, someDefaultValue));
+		assertArrayEquals(values, defaultConfig.getArrayProperty(someKey, someDelimiter, someDefaultValue));
 
-    String[] values = new String[]{"a", "b", "c"};
-    String[] anotherValues = new String[]{"b", "c", "d"};
-    String someValue = Joiner.on(someDelimiter).join(values);
-    String anotherValue = Joiner.on(someDelimiter).join(anotherValues);
+		verify(someProperties, times(1)).getProperty(someKey);
 
-    String[] someDefaultValue = new String[]{"1", "2"};
+		assertArrayEquals(someDefaultValue,
+				defaultConfig.getArrayProperty(someKey, someInvalidDelimiter, someDefaultValue));
+		assertArrayEquals(someDefaultValue,
+				defaultConfig.getArrayProperty(someKey, someInvalidDelimiter, someDefaultValue));
 
-    //set up config repo
-    someProperties = new Properties();
-    someProperties.setProperty(someKey, someValue);
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		verify(someProperties, times(3)).getProperty(someKey);
+	}
 
-    Properties anotherProperties = new Properties();
-    anotherProperties.setProperty(someKey, anotherValue);
+	@Test
+	public void testGetArrayPropertyMultipleTimesWithCacheAndValueChanges() throws Exception {
+		String someKey = "someKey";
+		String someDelimiter = ",";
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+		String[] values = new String[] { "a", "b", "c" };
+		String[] anotherValues = new String[] { "b", "c", "d" };
+		String someValue = Joiner.on(someDelimiter).join(values);
+		String anotherValue = Joiner.on(someDelimiter).join(anotherValues);
 
-    assertArrayEquals(values, defaultConfig.getArrayProperty(someKey, someDelimiter, someDefaultValue));
+		String[] someDefaultValue = new String[] { "1", "2" };
 
-    defaultConfig.onRepositoryChange(someNamespace, anotherProperties);
+		// set up config repo
+		someProperties = new Properties();
+		someProperties.setProperty(someKey, someValue);
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    assertArrayEquals(anotherValues, defaultConfig.getArrayProperty(someKey, someDelimiter, someDefaultValue));
-  }
+		Properties anotherProperties = new Properties();
+		anotherProperties.setProperty(someKey, anotherValue);
 
-  @Test
-  public void testGetDatePropertyWithFormat() throws Exception {
-    Date someDefaultValue = new Date();
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-    Date shortDate = assembleDate(2016, 9, 28, 0, 0, 0, 0);
-    Date mediumDate = assembleDate(2016, 9, 28, 15, 10, 10, 0);
-    Date longDate = assembleDate(2016, 9, 28, 15, 10, 10, 123);
+		assertArrayEquals(values, defaultConfig.getArrayProperty(someKey, someDelimiter, someDefaultValue));
 
-    //set up config repo
-    someProperties = new Properties();
-    someProperties.setProperty("shortDateProperty", "2016-09-28");
-    someProperties.setProperty("mediumDateProperty", "2016-09-28 15:10:10");
-    someProperties.setProperty("longDateProperty", "2016-09-28 15:10:10.123");
-    someProperties.setProperty("stringProperty", "someString");
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		defaultConfig.onRepositoryChange(someNamespace, anotherProperties);
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+		assertArrayEquals(anotherValues, defaultConfig.getArrayProperty(someKey, someDelimiter, someDefaultValue));
+	}
 
-    checkDatePropertyWithFormat(defaultConfig, shortDate, "shortDateProperty", "yyyy-MM-dd", someDefaultValue);
-    checkDatePropertyWithFormat(defaultConfig, mediumDate, "mediumDateProperty", "yyyy-MM-dd HH:mm:ss",
-        someDefaultValue);
-    checkDatePropertyWithFormat(defaultConfig, shortDate, "mediumDateProperty", "yyyy-MM-dd", someDefaultValue);
-    checkDatePropertyWithFormat(defaultConfig, longDate, "longDateProperty", "yyyy-MM-dd HH:mm:ss.SSS",
-        someDefaultValue);
-    checkDatePropertyWithFormat(defaultConfig, mediumDate, "longDateProperty", "yyyy-MM-dd HH:mm:ss", someDefaultValue);
-    checkDatePropertyWithFormat(defaultConfig, shortDate, "longDateProperty", "yyyy-MM-dd", someDefaultValue);
-    checkDatePropertyWithFormat(defaultConfig, someDefaultValue, "stringProperty", "yyyy-MM-dd", someDefaultValue);
-  }
+	@Test
+	public void testGetDatePropertyWithFormat() throws Exception {
+		Date someDefaultValue = new Date();
 
-  @Test
-  public void testGetDatePropertyWithNoFormat() throws Exception {
-    Date someDefaultValue = new Date();
+		Date shortDate = assembleDate(2016, 9, 28, 0, 0, 0, 0);
+		Date mediumDate = assembleDate(2016, 9, 28, 15, 10, 10, 0);
+		Date longDate = assembleDate(2016, 9, 28, 15, 10, 10, 123);
 
-    Date shortDate = assembleDate(2016, 9, 28, 0, 0, 0, 0);
-    Date mediumDate = assembleDate(2016, 9, 28, 15, 10, 10, 0);
-    Date longDate = assembleDate(2016, 9, 28, 15, 10, 10, 123);
+		// set up config repo
+		someProperties = new Properties();
+		someProperties.setProperty("shortDateProperty", "2016-09-28");
+		someProperties.setProperty("mediumDateProperty", "2016-09-28 15:10:10");
+		someProperties.setProperty("longDateProperty", "2016-09-28 15:10:10.123");
+		someProperties.setProperty("stringProperty", "someString");
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    //set up config repo
-    someProperties = new Properties();
-    someProperties.setProperty("shortDateProperty", "2016-09-28");
-    someProperties.setProperty("mediumDateProperty", "2016-09-28 15:10:10");
-    someProperties.setProperty("longDateProperty", "2016-09-28 15:10:10.123");
-    someProperties.setProperty("stringProperty", "someString");
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+		checkDatePropertyWithFormat(defaultConfig, shortDate, "shortDateProperty", "yyyy-MM-dd", someDefaultValue);
+		checkDatePropertyWithFormat(defaultConfig, mediumDate, "mediumDateProperty", "yyyy-MM-dd HH:mm:ss",
+				someDefaultValue);
+		checkDatePropertyWithFormat(defaultConfig, shortDate, "mediumDateProperty", "yyyy-MM-dd", someDefaultValue);
+		checkDatePropertyWithFormat(defaultConfig, longDate, "longDateProperty", "yyyy-MM-dd HH:mm:ss.SSS",
+				someDefaultValue);
+		checkDatePropertyWithFormat(defaultConfig, mediumDate, "longDateProperty", "yyyy-MM-dd HH:mm:ss",
+				someDefaultValue);
+		checkDatePropertyWithFormat(defaultConfig, shortDate, "longDateProperty", "yyyy-MM-dd", someDefaultValue);
+		checkDatePropertyWithFormat(defaultConfig, someDefaultValue, "stringProperty", "yyyy-MM-dd", someDefaultValue);
+	}
 
-    checkDatePropertyWithoutFormat(defaultConfig, shortDate, "shortDateProperty", someDefaultValue);
-    checkDatePropertyWithoutFormat(defaultConfig, mediumDate, "mediumDateProperty", someDefaultValue);
-    checkDatePropertyWithoutFormat(defaultConfig, longDate, "longDateProperty", someDefaultValue);
-    checkDatePropertyWithoutFormat(defaultConfig, someDefaultValue, "stringProperty", someDefaultValue);
-  }
+	@Test
+	public void testGetDatePropertyWithNoFormat() throws Exception {
+		Date someDefaultValue = new Date();
 
-  @Test
-  public void testGetEnumProperty() throws Exception {
-    SomeEnum someDefaultValue = SomeEnum.defaultValue;
+		Date shortDate = assembleDate(2016, 9, 28, 0, 0, 0, 0);
+		Date mediumDate = assembleDate(2016, 9, 28, 15, 10, 10, 0);
+		Date longDate = assembleDate(2016, 9, 28, 15, 10, 10, 123);
 
-    //set up config repo
-    someProperties = new Properties();
-    someProperties.setProperty("enumProperty", "someValue");
-    someProperties.setProperty("stringProperty", "someString");
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		// set up config repo
+		someProperties = new Properties();
+		someProperties.setProperty("shortDateProperty", "2016-09-28");
+		someProperties.setProperty("mediumDateProperty", "2016-09-28 15:10:10");
+		someProperties.setProperty("longDateProperty", "2016-09-28 15:10:10.123");
+		someProperties.setProperty("stringProperty", "someString");
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-    assertEquals(SomeEnum.someValue, defaultConfig.getEnumProperty("enumProperty", SomeEnum.class, someDefaultValue));
-    assertEquals(someDefaultValue, defaultConfig.getEnumProperty("stringProperty", SomeEnum.class, someDefaultValue));
-  }
+		checkDatePropertyWithoutFormat(defaultConfig, shortDate, "shortDateProperty", someDefaultValue);
+		checkDatePropertyWithoutFormat(defaultConfig, mediumDate, "mediumDateProperty", someDefaultValue);
+		checkDatePropertyWithoutFormat(defaultConfig, longDate, "longDateProperty", someDefaultValue);
+		checkDatePropertyWithoutFormat(defaultConfig, someDefaultValue, "stringProperty", someDefaultValue);
+	}
 
-  @Test
-  public void testGetDurationProperty() throws Exception {
-    long someDefaultValue = 1000;
-    long result = 2 * 24 * 3600 * 1000 + 3 * 3600 * 1000 + 4 * 60 * 1000 + 5 * 1000 + 123;
+	@Test
+	public void testGetEnumProperty() throws Exception {
+		SomeEnum someDefaultValue = SomeEnum.defaultValue;
 
-    //set up config repo
-    someProperties = new Properties();
-    someProperties.setProperty("durationProperty", "2D3H4m5S123ms");
-    someProperties.setProperty("stringProperty", "someString");
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		// set up config repo
+		someProperties = new Properties();
+		someProperties.setProperty("enumProperty", "someValue");
+		someProperties.setProperty("stringProperty", "someString");
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-    assertEquals(result, defaultConfig.getDurationProperty("durationProperty", someDefaultValue));
-    assertEquals(someDefaultValue, defaultConfig.getDurationProperty("stringProperty", someDefaultValue));
-  }
+		assertEquals(SomeEnum.someValue,
+				defaultConfig.getEnumProperty("enumProperty", SomeEnum.class, someDefaultValue));
+		assertEquals(someDefaultValue,
+				defaultConfig.getEnumProperty("stringProperty", SomeEnum.class, someDefaultValue));
+	}
 
-  @Test
-  public void testOnRepositoryChange() throws Exception {
-    String someKey = "someKey";
-    String someSystemPropertyValue = "system-property-value";
+	@Test
+	public void testGetDurationProperty() throws Exception {
+		long someDefaultValue = 1000;
+		long result = 2 * 24 * 3600 * 1000 + 3 * 3600 * 1000 + 4 * 60 * 1000 + 5 * 1000 + 123;
 
-    String anotherKey = "anotherKey";
-    String someLocalFileValue = "local-file-value";
+		// set up config repo
+		someProperties = new Properties();
+		someProperties.setProperty("durationProperty", "2D3H4m5S123ms");
+		someProperties.setProperty("stringProperty", "someString");
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    String keyToBeDeleted = "keyToBeDeleted";
-    String keyToBeDeletedValue = "keyToBeDeletedValue";
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-    String yetAnotherKey = "yetAnotherKey";
-    String yetAnotherValue = "yetAnotherValue";
+		assertEquals(result, defaultConfig.getDurationProperty("durationProperty", someDefaultValue));
+		assertEquals(someDefaultValue, defaultConfig.getDurationProperty("stringProperty", someDefaultValue));
+	}
 
-    String yetAnotherResourceValue = "yetAnotherResourceValue";
-    //set up system property
-    System.setProperty(someKey, someSystemPropertyValue);
+	@Test
+	public void testOnRepositoryChange() throws Exception {
+		String someKey = "someKey";
+		String someSystemPropertyValue = "system-property-value";
 
-    //set up config repo
-    someProperties = new Properties();
-    someProperties.putAll(ImmutableMap
-        .of(someKey, someLocalFileValue, anotherKey, someLocalFileValue, keyToBeDeleted,
-            keyToBeDeletedValue, yetAnotherKey, yetAnotherValue));
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		String anotherKey = "anotherKey";
+		String someLocalFileValue = "local-file-value";
 
-    //set up resource file
-    File resourceFile = new File(someResourceDir, someNamespace + ".properties");
-    Files.append(yetAnotherKey + "=" + yetAnotherResourceValue, resourceFile, Charsets.UTF_8);
+		String keyToBeDeleted = "keyToBeDeleted";
+		String keyToBeDeletedValue = "keyToBeDeletedValue";
 
-    DefaultConfig defaultConfig =
-        new DefaultConfig(someNamespace, configRepository);
+		String yetAnotherKey = "yetAnotherKey";
+		String yetAnotherValue = "yetAnotherValue";
 
-    final SettableFuture<ConfigChangeEvent> configChangeFuture = SettableFuture.create();
-    ConfigChangeListener someListener = new ConfigChangeListener() {
-      @Override
-      public void onChange(ConfigChangeEvent changeEvent) {
-        configChangeFuture.set(changeEvent);
-      }
-    };
+		String yetAnotherResourceValue = "yetAnotherResourceValue";
+		// set up system property
+		System.setProperty(someKey, someSystemPropertyValue);
 
-    defaultConfig.addChangeListener(someListener);
+		// set up config repo
+		someProperties = new Properties();
+		someProperties.putAll(ImmutableMap.of(someKey, someLocalFileValue, anotherKey, someLocalFileValue,
+				keyToBeDeleted, keyToBeDeletedValue, yetAnotherKey, yetAnotherValue));
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    Properties newProperties = new Properties();
-    String someKeyNewValue = "new-some-value";
-    String anotherKeyNewValue = "another-new-value";
-    String newKey = "newKey";
-    String newValue = "newValue";
-    newProperties.putAll(ImmutableMap
-        .of(someKey, someKeyNewValue, anotherKey, anotherKeyNewValue, newKey, newValue));
+		// set up resource file
+		File resourceFile = new File(someResourceDir, someNamespace + ".properties");
+		Files.append(yetAnotherKey + "=" + yetAnotherResourceValue, resourceFile, Charsets.UTF_8);
 
-    defaultConfig.onRepositoryChange(someNamespace, newProperties);
+		DefaultConfig defaultConfig = new DefaultConfig(someNamespace, configRepository);
 
-    ConfigChangeEvent changeEvent = configChangeFuture.get(500, TimeUnit.MILLISECONDS);
+		final SettableFuture<ConfigChangeEvent> configChangeFuture = SettableFuture.create();
+		ConfigChangeListener someListener = new ConfigChangeListener() {
+			@Override
+			public void onChange(ConfigChangeEvent changeEvent) {
+				configChangeFuture.set(changeEvent);
+			}
+		};
 
-    //clean up
-    System.clearProperty(someKey);
+		defaultConfig.addChangeListener(someListener);
 
-    assertEquals(someNamespace, changeEvent.getNamespace());
-    assertEquals(4, changeEvent.changedKeys().size());
+		Properties newProperties = new Properties();
+		String someKeyNewValue = "new-some-value";
+		String anotherKeyNewValue = "another-new-value";
+		String newKey = "newKey";
+		String newValue = "newValue";
+		newProperties
+				.putAll(ImmutableMap.of(someKey, someKeyNewValue, anotherKey, anotherKeyNewValue, newKey, newValue));
 
-    ConfigChange anotherKeyChange = changeEvent.getChange(anotherKey);
-    assertEquals(someLocalFileValue, anotherKeyChange.getOldValue());
-    assertEquals(anotherKeyNewValue, anotherKeyChange.getNewValue());
-    assertEquals(PropertyChangeType.MODIFIED, anotherKeyChange.getChangeType());
+		defaultConfig.onRepositoryChange(someNamespace, newProperties);
 
-    ConfigChange yetAnotherKeyChange = changeEvent.getChange(yetAnotherKey);
-    assertEquals(yetAnotherValue, yetAnotherKeyChange.getOldValue());
-    assertEquals(yetAnotherResourceValue, yetAnotherKeyChange.getNewValue());
-    assertEquals(PropertyChangeType.MODIFIED, yetAnotherKeyChange.getChangeType());
+		ConfigChangeEvent changeEvent = configChangeFuture.get(500, TimeUnit.MILLISECONDS);
 
-    ConfigChange keyToBeDeletedChange = changeEvent.getChange(keyToBeDeleted);
-    assertEquals(keyToBeDeletedValue, keyToBeDeletedChange.getOldValue());
-    assertEquals(null, keyToBeDeletedChange.getNewValue());
-    assertEquals(PropertyChangeType.DELETED, keyToBeDeletedChange.getChangeType());
+		// clean up
+		System.clearProperty(someKey);
 
-    ConfigChange newKeyChange = changeEvent.getChange(newKey);
-    assertEquals(null, newKeyChange.getOldValue());
-    assertEquals(newValue, newKeyChange.getNewValue());
-    assertEquals(PropertyChangeType.ADDED, newKeyChange.getChangeType());
-  }
+		assertEquals(someNamespace, changeEvent.getNamespace());
+		assertEquals(4, changeEvent.changedKeys().size());
 
-  private void checkDatePropertyWithFormat(Config config, Date expected, String propertyName, String format, Date
-      defaultValue) {
-    assertEquals(expected, config.getDateProperty(propertyName, format, defaultValue));
-  }
+		ConfigChange anotherKeyChange = changeEvent.getChange(anotherKey);
+		assertEquals(someLocalFileValue, anotherKeyChange.getOldValue());
+		assertEquals(anotherKeyNewValue, anotherKeyChange.getNewValue());
+		assertEquals(PropertyChangeType.MODIFIED, anotherKeyChange.getChangeType());
 
-  private void checkDatePropertyWithoutFormat(Config config, Date expected, String propertyName, Date defaultValue) {
-    assertEquals(expected, config.getDateProperty(propertyName, defaultValue));
-  }
+		ConfigChange yetAnotherKeyChange = changeEvent.getChange(yetAnotherKey);
+		assertEquals(yetAnotherValue, yetAnotherKeyChange.getOldValue());
+		assertEquals(yetAnotherResourceValue, yetAnotherKeyChange.getNewValue());
+		assertEquals(PropertyChangeType.MODIFIED, yetAnotherKeyChange.getChangeType());
 
-  private Date assembleDate(int year, int month, int day, int hour, int minute, int second, int millisecond) {
-    Calendar date = Calendar.getInstance();
-    date.set(year, month - 1, day, hour, minute, second); //Month in Calendar is 0 based
-    date.set(Calendar.MILLISECOND, millisecond);
+		ConfigChange keyToBeDeletedChange = changeEvent.getChange(keyToBeDeleted);
+		assertEquals(keyToBeDeletedValue, keyToBeDeletedChange.getOldValue());
+		assertEquals(null, keyToBeDeletedChange.getNewValue());
+		assertEquals(PropertyChangeType.DELETED, keyToBeDeletedChange.getChangeType());
 
-    return date.getTime();
-  }
+		ConfigChange newKeyChange = changeEvent.getChange(newKey);
+		assertEquals(null, newKeyChange.getOldValue());
+		assertEquals(newValue, newKeyChange.getNewValue());
+		assertEquals(PropertyChangeType.ADDED, newKeyChange.getChangeType());
+	}
 
-  private enum SomeEnum {
-    someValue, defaultValue
-  }
+	private void checkDatePropertyWithFormat(Config config, Date expected, String propertyName, String format,
+			Date defaultValue) {
+		assertEquals(expected, config.getDateProperty(propertyName, format, defaultValue));
+	}
 
-  public static class MockConfigUtil extends ConfigUtil {
-    @Override
-    public long getMaxConfigCacheSize() {
-      return 10;
-    }
+	private void checkDatePropertyWithoutFormat(Config config, Date expected, String propertyName, Date defaultValue) {
+		assertEquals(expected, config.getDateProperty(propertyName, defaultValue));
+	}
 
-    @Override
-    public long getConfigCacheExpireTime() {
-      return 1;
-    }
+	private Date assembleDate(int year, int month, int day, int hour, int minute, int second, int millisecond) {
+		Calendar date = Calendar.getInstance();
+		date.set(year, month - 1, day, hour, minute, second); // Month in Calendar is 0 based
+		date.set(Calendar.MILLISECOND, millisecond);
 
-    @Override
-    public TimeUnit getConfigCacheExpireTimeUnit() {
-      return TimeUnit.MINUTES;
-    }
-  }
+		return date.getTime();
+	}
 
-  public static class MockConfigUtilWithSmallCache extends MockConfigUtil {
-    @Override
-    public long getMaxConfigCacheSize() {
-      return 1;
-    }
-  }
+	private enum SomeEnum {
+		someValue, defaultValue
+	}
 
-  public static class MockConfigUtilWithShortExpireTime extends MockConfigUtil {
-    @Override
-    public long getConfigCacheExpireTime() {
-      return 50;
-    }
+	public static class MockConfigUtil extends ConfigUtil {
+		@Override
+		public long getMaxConfigCacheSize() {
+			return 10;
+		}
 
-    @Override
-    public TimeUnit getConfigCacheExpireTimeUnit() {
-      return TimeUnit.MILLISECONDS;
-    }
-  }
+		@Override
+		public long getConfigCacheExpireTime() {
+			return 1;
+		}
+
+		@Override
+		public TimeUnit getConfigCacheExpireTimeUnit() {
+			return TimeUnit.MINUTES;
+		}
+	}
+
+	public static class MockConfigUtilWithSmallCache extends MockConfigUtil {
+		@Override
+		public long getMaxConfigCacheSize() {
+			return 1;
+		}
+	}
+
+	public static class MockConfigUtilWithShortExpireTime extends MockConfigUtil {
+		@Override
+		public long getConfigCacheExpireTime() {
+			return 50;
+		}
+
+		@Override
+		public TimeUnit getConfigCacheExpireTimeUnit() {
+			return TimeUnit.MILLISECONDS;
+		}
+	}
 }

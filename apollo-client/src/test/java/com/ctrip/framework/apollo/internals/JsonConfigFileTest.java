@@ -22,91 +22,91 @@ import com.ctrip.framework.apollo.core.enums.ConfigFileFormat;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class JsonConfigFileTest {
-  private String someNamespace;
-  @Mock
-  private ConfigRepository configRepository;
+	private String someNamespace;
+	@Mock
+	private ConfigRepository configRepository;
 
-  @Before
-  public void setUp() throws Exception {
-    someNamespace = "someName";
-  }
+	@Before
+	public void setUp() throws Exception {
+		someNamespace = "someName";
+	}
 
-  @Test
-  public void testWhenHasContent() throws Exception {
-    Properties someProperties = new Properties();
-    String key = ConfigConsts.CONFIG_FILE_CONTENT_KEY;
-    String someValue = "someValue";
-    someProperties.setProperty(key, someValue);
+	@Test
+	public void testWhenHasContent() throws Exception {
+		Properties someProperties = new Properties();
+		String key = ConfigConsts.CONFIG_FILE_CONTENT_KEY;
+		String someValue = "someValue";
+		someProperties.setProperty(key, someValue);
 
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    JsonConfigFile configFile = new JsonConfigFile(someNamespace, configRepository);
+		JsonConfigFile configFile = new JsonConfigFile(someNamespace, configRepository);
 
-    assertEquals(ConfigFileFormat.JSON, configFile.getConfigFileFormat());
-    assertEquals(someNamespace, configFile.getNamespace());
-    assertTrue(configFile.hasContent());
-    assertEquals(someValue, configFile.getContent());
-  }
+		assertEquals(ConfigFileFormat.JSON, configFile.getConfigFileFormat());
+		assertEquals(someNamespace, configFile.getNamespace());
+		assertTrue(configFile.hasContent());
+		assertEquals(someValue, configFile.getContent());
+	}
 
-  @Test
-  public void testWhenHasNoContent() throws Exception {
-    when(configRepository.getConfig()).thenReturn(null);
+	@Test
+	public void testWhenHasNoContent() throws Exception {
+		when(configRepository.getConfig()).thenReturn(null);
 
-    JsonConfigFile configFile = new JsonConfigFile(someNamespace, configRepository);
+		JsonConfigFile configFile = new JsonConfigFile(someNamespace, configRepository);
 
-    assertFalse(configFile.hasContent());
-    assertNull(configFile.getContent());
-  }
+		assertFalse(configFile.hasContent());
+		assertNull(configFile.getContent());
+	}
 
-  @Test
-  public void testWhenConfigRepositoryHasError() throws Exception {
-    when(configRepository.getConfig()).thenThrow(new RuntimeException("someError"));
+	@Test
+	public void testWhenConfigRepositoryHasError() throws Exception {
+		when(configRepository.getConfig()).thenThrow(new RuntimeException("someError"));
 
-    JsonConfigFile configFile = new JsonConfigFile(someNamespace, configRepository);
+		JsonConfigFile configFile = new JsonConfigFile(someNamespace, configRepository);
 
-    assertFalse(configFile.hasContent());
-    assertNull(configFile.getContent());
-  }
+		assertFalse(configFile.hasContent());
+		assertNull(configFile.getContent());
+	}
 
-  @Test
-  public void testOnRepositoryChange() throws Exception {
-    Properties someProperties = new Properties();
-    String key = ConfigConsts.CONFIG_FILE_CONTENT_KEY;
-    String someValue = "someValue";
-    String anotherValue = "anotherValue";
-    someProperties.setProperty(key, someValue);
+	@Test
+	public void testOnRepositoryChange() throws Exception {
+		Properties someProperties = new Properties();
+		String key = ConfigConsts.CONFIG_FILE_CONTENT_KEY;
+		String someValue = "someValue";
+		String anotherValue = "anotherValue";
+		someProperties.setProperty(key, someValue);
 
-    when(configRepository.getConfig()).thenReturn(someProperties);
+		when(configRepository.getConfig()).thenReturn(someProperties);
 
-    JsonConfigFile configFile = new JsonConfigFile(someNamespace, configRepository);
+		JsonConfigFile configFile = new JsonConfigFile(someNamespace, configRepository);
 
-    assertEquals(someValue, configFile.getContent());
+		assertEquals(someValue, configFile.getContent());
 
-    Properties anotherProperties = new Properties();
-    anotherProperties.setProperty(key, anotherValue);
+		Properties anotherProperties = new Properties();
+		anotherProperties.setProperty(key, anotherValue);
 
-    configFile.onRepositoryChange(someNamespace, anotherProperties);
+		configFile.onRepositoryChange(someNamespace, anotherProperties);
 
-    assertEquals(anotherValue, configFile.getContent());
-  }
+		assertEquals(anotherValue, configFile.getContent());
+	}
 
-  @Test
-  public void testWhenConfigRepositoryHasErrorAndThenRecovered() throws Exception {
-    Properties someProperties = new Properties();
-    String key = ConfigConsts.CONFIG_FILE_CONTENT_KEY;
-    String someValue = "someValue";
-    someProperties.setProperty(key, someValue);
+	@Test
+	public void testWhenConfigRepositoryHasErrorAndThenRecovered() throws Exception {
+		Properties someProperties = new Properties();
+		String key = ConfigConsts.CONFIG_FILE_CONTENT_KEY;
+		String someValue = "someValue";
+		someProperties.setProperty(key, someValue);
 
-    when(configRepository.getConfig()).thenThrow(new RuntimeException("someError"));
+		when(configRepository.getConfig()).thenThrow(new RuntimeException("someError"));
 
-    JsonConfigFile configFile = new JsonConfigFile(someNamespace, configRepository);
+		JsonConfigFile configFile = new JsonConfigFile(someNamespace, configRepository);
 
-    assertFalse(configFile.hasContent());
-    assertNull(configFile.getContent());
+		assertFalse(configFile.hasContent());
+		assertNull(configFile.getContent());
 
-    configFile.onRepositoryChange(someNamespace, someProperties);
+		configFile.onRepositoryChange(someNamespace, someProperties);
 
-    assertTrue(configFile.hasContent());
-    assertEquals(someValue, configFile.getContent());
-  }
+		assertTrue(configFile.hasContent());
+		assertEquals(someValue, configFile.getContent());
+	}
 }

@@ -1,13 +1,6 @@
 package com.ctrip.framework.apollo.biz.utils;
 
-import com.google.common.collect.Sets;
-
-import com.ctrip.framework.apollo.biz.MockBeanFactory;
-import com.ctrip.framework.apollo.biz.entity.Namespace;
-
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -15,53 +8,60 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.ctrip.framework.apollo.biz.MockBeanFactory;
+import com.ctrip.framework.apollo.biz.entity.Namespace;
+import com.google.common.collect.Sets;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
  */
 public class ReleaseKeyGeneratorTest {
-  private static final Logger logger = LoggerFactory.getLogger(ReleaseKeyGeneratorTest.class);
-  @Test
-  public void testGenerateReleaseKey() throws Exception {
-    String someAppId = "someAppId";
-    String someCluster = "someCluster";
-    String someNamespace = "someNamespace";
+	private static final Logger logger = LoggerFactory.getLogger(ReleaseKeyGeneratorTest.class);
 
-    String anotherAppId = "anotherAppId";
+	@Test
+	public void testGenerateReleaseKey() throws Exception {
+		String someAppId = "someAppId";
+		String someCluster = "someCluster";
+		String someNamespace = "someNamespace";
 
-    Namespace namespace = MockBeanFactory.mockNamespace(someAppId, someCluster, someNamespace);
-    Namespace anotherNamespace = MockBeanFactory.mockNamespace(anotherAppId, someCluster, someNamespace);
-    int generateTimes = 50000;
-    Set<String> releaseKeys = Sets.newConcurrentHashSet();
+		String anotherAppId = "anotherAppId";
 
-    ExecutorService executorService = Executors.newFixedThreadPool(2);
-    CountDownLatch latch = new CountDownLatch(1);
+		Namespace namespace = MockBeanFactory.mockNamespace(someAppId, someCluster, someNamespace);
+		Namespace anotherNamespace = MockBeanFactory.mockNamespace(anotherAppId, someCluster, someNamespace);
+		int generateTimes = 50000;
+		Set<String> releaseKeys = Sets.newConcurrentHashSet();
 
-    executorService.submit(generateReleaseKeysTask(namespace, releaseKeys, generateTimes, latch));
-    executorService.submit(generateReleaseKeysTask(anotherNamespace, releaseKeys, generateTimes, latch));
+		ExecutorService executorService = Executors.newFixedThreadPool(2);
+		CountDownLatch latch = new CountDownLatch(1);
 
-    latch.countDown();
+		executorService.submit(generateReleaseKeysTask(namespace, releaseKeys, generateTimes, latch));
+		executorService.submit(generateReleaseKeysTask(anotherNamespace, releaseKeys, generateTimes, latch));
 
-    executorService.shutdown();
-    executorService.awaitTermination(10, TimeUnit.SECONDS);
+		latch.countDown();
 
-    //make sure keys are unique
-    assertEquals(generateTimes * 2, releaseKeys.size());
-  }
+		executorService.shutdown();
+		executorService.awaitTermination(10, TimeUnit.SECONDS);
 
-  private Runnable generateReleaseKeysTask(Namespace namespace, Set<String> releaseKeys,
-                                   int generateTimes, CountDownLatch latch) {
-    return () -> {
-      try {
-        latch.await();
-      } catch (InterruptedException e) {
-        //ignore
-      }
-      for (int i = 0; i < generateTimes; i++) {
-        releaseKeys.add(ReleaseKeyGenerator.generateReleaseKey(namespace));
-      }
-    };
-  }
+		// make sure keys are unique
+		assertEquals(generateTimes * 2, releaseKeys.size());
+	}
+
+	private Runnable generateReleaseKeysTask(Namespace namespace, Set<String> releaseKeys, int generateTimes,
+			CountDownLatch latch) {
+		return () -> {
+			try {
+				latch.await();
+			} catch (InterruptedException e) {
+				// ignore
+			}
+			for (int i = 0; i < generateTimes; i++) {
+				releaseKeys.add(ReleaseKeyGenerator.generateReleaseKey(namespace));
+			}
+		};
+	}
 
 }

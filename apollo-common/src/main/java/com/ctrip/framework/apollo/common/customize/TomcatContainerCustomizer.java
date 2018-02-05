@@ -18,33 +18,32 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class TomcatContainerCustomizer implements EmbeddedServletContainerCustomizer {
-  private static final Logger logger = LoggerFactory.getLogger(TomcatContainerCustomizer.class);
-  private static final String TOMCAT_ACCEPTOR_COUNT = "server.tomcat.accept-count";
-  @Autowired
-  private Environment environment;
+	private static final Logger logger = LoggerFactory.getLogger(TomcatContainerCustomizer.class);
+	private static final String TOMCAT_ACCEPTOR_COUNT = "server.tomcat.accept-count";
+	@Autowired
+	private Environment environment;
 
-  @Override
-  public void customize(ConfigurableEmbeddedServletContainer container) {
-    if (!(container instanceof TomcatEmbeddedServletContainerFactory)) {
-      return;
-    }
-    if (!environment.containsProperty(TOMCAT_ACCEPTOR_COUNT)) {
-      return;
-    }
-    TomcatEmbeddedServletContainerFactory tomcat =
-        (TomcatEmbeddedServletContainerFactory) container;
-    tomcat.addConnectorCustomizers(new TomcatConnectorCustomizer() {
-      @Override
-      public void customize(Connector connector) {
-        ProtocolHandler handler = connector.getProtocolHandler();
-        if (handler instanceof Http11NioProtocol) {
-          Http11NioProtocol http = (Http11NioProtocol) handler;
-          int acceptCount = Integer.parseInt(environment.getProperty(TOMCAT_ACCEPTOR_COUNT));
-          http.setBacklog(acceptCount);
-          logger.info("Setting tomcat accept count to {}", acceptCount);
-        }
+	@Override
+	public void customize(ConfigurableEmbeddedServletContainer container) {
+		if (!(container instanceof TomcatEmbeddedServletContainerFactory)) {
+			return;
+		}
+		if (!environment.containsProperty(TOMCAT_ACCEPTOR_COUNT)) {
+			return;
+		}
+		TomcatEmbeddedServletContainerFactory tomcat = (TomcatEmbeddedServletContainerFactory) container;
+		tomcat.addConnectorCustomizers(new TomcatConnectorCustomizer() {
+			@Override
+			public void customize(Connector connector) {
+				ProtocolHandler handler = connector.getProtocolHandler();
+				if (handler instanceof Http11NioProtocol) {
+					Http11NioProtocol http = (Http11NioProtocol) handler;
+					int acceptCount = Integer.parseInt(environment.getProperty(TOMCAT_ACCEPTOR_COUNT));
+					http.setBacklog(acceptCount);
+					logger.info("Setting tomcat accept count to {}", acceptCount);
+				}
 
-      }
-    });
-  }
+			}
+		});
+	}
 }

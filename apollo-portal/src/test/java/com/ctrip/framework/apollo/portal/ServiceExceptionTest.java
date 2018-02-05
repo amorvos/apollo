@@ -1,12 +1,13 @@
 package com.ctrip.framework.apollo.portal;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
-import com.google.gson.Gson;
-
-import com.ctrip.framework.apollo.common.exception.ServiceException;
-import com.ctrip.framework.apollo.portal.controller.AppController;
-import com.ctrip.framework.apollo.portal.entity.model.AppModel;
-import com.ctrip.framework.apollo.portal.service.AppService;
+import java.nio.charset.Charset;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,14 +17,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
-import java.nio.charset.Charset;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
+import com.ctrip.framework.apollo.common.exception.ServiceException;
+import com.ctrip.framework.apollo.portal.controller.AppController;
+import com.ctrip.framework.apollo.portal.entity.model.AppModel;
+import com.ctrip.framework.apollo.portal.service.AppService;
+import com.google.gson.Gson;
 
 public class ServiceExceptionTest extends AbstractUnitTest {
 
@@ -31,7 +29,6 @@ public class ServiceExceptionTest extends AbstractUnitTest {
 	private AppController appController;
 	@Mock
 	private AppService appService;
-
 
 	@Test
 	public void testAdminServiceException() {
@@ -42,14 +39,12 @@ public class ServiceExceptionTest extends AbstractUnitTest {
 		Map<String, Object> errorAttributes = new LinkedHashMap<>();
 		errorAttributes.put("status", status);
 		errorAttributes.put("message", errorMsg);
-		errorAttributes.put("timestamp",
-												LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+		errorAttributes.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 		errorAttributes.put("exception", ServiceException.class.getName());
 		errorAttributes.put("errorCode", errorCode);
 
-		HttpStatusCodeException adminException =
-				new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "admin server error",
-																		 new Gson().toJson(errorAttributes).getBytes(), Charset.defaultCharset());
+		HttpStatusCodeException adminException = new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR,
+				"admin server error", new Gson().toJson(errorAttributes).getBytes(), Charset.defaultCharset());
 
 		when(appService.createAppInLocal(any())).thenThrow(adminException);
 

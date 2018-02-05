@@ -1,5 +1,10 @@
 package com.ctrip.framework.apollo.portal.service;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.ctrip.framework.apollo.common.dto.ClusterDTO;
 import com.ctrip.framework.apollo.common.exception.BadRequestException;
 import com.ctrip.framework.apollo.core.enums.Env;
@@ -8,40 +13,35 @@ import com.ctrip.framework.apollo.portal.constant.TracerEventType;
 import com.ctrip.framework.apollo.portal.spi.UserInfoHolder;
 import com.ctrip.framework.apollo.tracer.Tracer;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
 @Service
 public class ClusterService {
 
-  @Autowired
-  private UserInfoHolder userInfoHolder;
-  @Autowired
-  private AdminServiceAPI.ClusterAPI clusterAPI;
+	@Autowired
+	private UserInfoHolder userInfoHolder;
+	@Autowired
+	private AdminServiceAPI.ClusterAPI clusterAPI;
 
-  public List<ClusterDTO> findClusters(Env env, String appId) {
-    return clusterAPI.findClustersByApp(appId, env);
-  }
+	public List<ClusterDTO> findClusters(Env env, String appId) {
+		return clusterAPI.findClustersByApp(appId, env);
+	}
 
-  public ClusterDTO createCluster(Env env, ClusterDTO cluster) {
-    if (!clusterAPI.isClusterUnique(cluster.getAppId(), env, cluster.getName())) {
-      throw new BadRequestException(String.format("cluster %s already exists.", cluster.getName()));
-    }
-    ClusterDTO clusterDTO = clusterAPI.create(env, cluster);
+	public ClusterDTO createCluster(Env env, ClusterDTO cluster) {
+		if (!clusterAPI.isClusterUnique(cluster.getAppId(), env, cluster.getName())) {
+			throw new BadRequestException(String.format("cluster %s already exists.", cluster.getName()));
+		}
+		ClusterDTO clusterDTO = clusterAPI.create(env, cluster);
 
-    Tracer.logEvent(TracerEventType.CREATE_CLUSTER, cluster.getAppId(), "0", cluster.getName());
+		Tracer.logEvent(TracerEventType.CREATE_CLUSTER, cluster.getAppId(), "0", cluster.getName());
 
-    return clusterDTO;
-  }
+		return clusterDTO;
+	}
 
-  public void deleteCluster(Env env, String appId, String clusterName){
-    clusterAPI.delete(env, appId, clusterName, userInfoHolder.getUser().getUserId());
-  }
+	public void deleteCluster(Env env, String appId, String clusterName) {
+		clusterAPI.delete(env, appId, clusterName, userInfoHolder.getUser().getUserId());
+	}
 
-  public ClusterDTO loadCluster(String appId, Env env, String clusterName){
-    return clusterAPI.loadCluster(appId, env, clusterName);
-  }
+	public ClusterDTO loadCluster(String appId, Env env, String clusterName) {
+		return clusterAPI.loadCluster(appId, env, clusterName);
+	}
 
 }

@@ -1,15 +1,12 @@
 package com.ctrip.framework.apollo.configservice.integration;
 
-import com.google.gson.Gson;
+import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.ctrip.framework.apollo.ConfigServiceTestConfiguration;
-import com.ctrip.framework.apollo.biz.config.BizConfig;
-import com.ctrip.framework.apollo.biz.entity.Namespace;
-import com.ctrip.framework.apollo.biz.entity.Release;
-import com.ctrip.framework.apollo.biz.entity.ReleaseMessage;
-import com.ctrip.framework.apollo.biz.repository.ReleaseMessageRepository;
-import com.ctrip.framework.apollo.biz.repository.ReleaseRepository;
-import com.ctrip.framework.apollo.biz.utils.ReleaseKeyGenerator;
+import javax.annotation.PostConstruct;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +21,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.annotation.PostConstruct;
+import com.ctrip.framework.apollo.ConfigServiceTestConfiguration;
+import com.ctrip.framework.apollo.biz.config.BizConfig;
+import com.ctrip.framework.apollo.biz.entity.Namespace;
+import com.ctrip.framework.apollo.biz.entity.Release;
+import com.ctrip.framework.apollo.biz.entity.ReleaseMessage;
+import com.ctrip.framework.apollo.biz.repository.ReleaseMessageRepository;
+import com.ctrip.framework.apollo.biz.repository.ReleaseRepository;
+import com.ctrip.framework.apollo.biz.utils.ReleaseKeyGenerator;
+import com.google.gson.Gson;
 
 /**
  * @author Jason Song(song_s@ctrip.com)
@@ -39,87 +38,84 @@ import javax.annotation.PostConstruct;
 @SpringApplicationConfiguration(classes = AbstractBaseIntegrationTest.TestConfiguration.class)
 @WebIntegrationTest(randomPort = true)
 public abstract class AbstractBaseIntegrationTest {
-  @Autowired
-  private ReleaseMessageRepository releaseMessageRepository;
-  @Autowired
-  private ReleaseRepository releaseRepository;
+	RestTemplate restTemplate = new TestRestTemplate();
+	@Value("${local.server.port}")
+	int port;
+	@Autowired
+	private ReleaseMessageRepository releaseMessageRepository;
+	@Autowired
+	private ReleaseRepository releaseRepository;
+	private Gson gson = new Gson();
 
-  private Gson gson = new Gson();
+	@PostConstruct
+	private void postConstruct() {
+		restTemplate.setErrorHandler(new DefaultResponseErrorHandler());
+	}
 
-  RestTemplate restTemplate = new TestRestTemplate();
+	protected String getHostUrl() {
+		return "http://localhost:" + port;
+	}
 
-  @PostConstruct
-  private void postConstruct() {
-    restTemplate.setErrorHandler(new DefaultResponseErrorHandler());
-  }
+	protected void sendReleaseMessage(String message) {
+		ReleaseMessage releaseMessage = new ReleaseMessage(message);
+		releaseMessageRepository.save(releaseMessage);
+	}
 
-  @Value("${local.server.port}")
-  int port;
+	public Release buildRelease(String name, String comment, Namespace namespace, Map<String, String> configurations,
+			String owner) {
+		Release release = new Release();
+		release.setReleaseKey(ReleaseKeyGenerator.generateReleaseKey(namespace));
+		release.setDataChangeCreatedTime(new Date());
+		release.setDataChangeCreatedBy(owner);
+		release.setDataChangeLastModifiedBy(owner);
+		release.setName(name);
+		release.setComment(comment);
+		release.setAppId(namespace.getAppId());
+		release.setClusterName(namespace.getClusterName());
+		release.setNamespaceName(namespace.getNamespaceName());
+		release.setConfigurations(gson.toJson(configurations));
+		release = releaseRepository.save(release);
 
-  protected String getHostUrl() {
-    return "http://localhost:" + port;
-  }
+		return release;
+	}
 
-  @Configuration
-  @Import(ConfigServiceTestConfiguration.class)
-  protected static class TestConfiguration {
-    @Bean
-    public BizConfig bizConfig() {
-      return new TestBizConfig();
-    }
-  }
+	protected void periodicSendMessage(ExecutorService executorService, String message, AtomicBoolean stop) {
+		executorService.submit((Runnable) () -> {
+			// wait for the request connected to server
+			while (!stop.get() && !Thread.currentThread().isInterrupted()) {
+				try {
+					TimeUnit.MILLISECONDS.sleep(100);
+				} catch (InterruptedException e) {
+				}
 
-  protected void sendReleaseMessage(String message) {
-    ReleaseMessage releaseMessage = new ReleaseMessage(message);
-    releaseMessageRepository.save(releaseMessage);
-  }
+				// double check
+				if (stop.get()) {
+					break;
+				}
 
-  public Release buildRelease(String name, String comment, Namespace namespace,
-                              Map<String, String> configurations, String owner) {
-    Release release = new Release();
-    release.setReleaseKey(ReleaseKeyGenerator.generateReleaseKey(namespace));
-    release.setDataChangeCreatedTime(new Date());
-    release.setDataChangeCreatedBy(owner);
-    release.setDataChangeLastModifiedBy(owner);
-    release.setName(name);
-    release.setComment(comment);
-    release.setAppId(namespace.getAppId());
-    release.setClusterName(namespace.getClusterName());
-    release.setNamespaceName(namespace.getNamespaceName());
-    release.setConfigurations(gson.toJson(configurations));
-    release = releaseRepository.save(release);
+				sendReleaseMessage(message);
+			}
+		});
+	}
 
-    return release;
-  }
+	@Configuration
+	@Import(ConfigServiceTestConfiguration.class)
+	protected static class TestConfiguration {
+		@Bean
+		public BizConfig bizConfig() {
+			return new TestBizConfig();
+		}
+	}
 
-  protected void periodicSendMessage(ExecutorService executorService, String message, AtomicBoolean stop) {
-    executorService.submit((Runnable) () -> {
-      //wait for the request connected to server
-      while (!stop.get() && !Thread.currentThread().isInterrupted()) {
-        try {
-          TimeUnit.MILLISECONDS.sleep(100);
-        } catch (InterruptedException e) {
-        }
+	private static class TestBizConfig extends BizConfig {
+		@Override
+		public int appNamespaceCacheScanInterval() {
+			return 50;
+		}
 
-        //double check
-        if (stop.get()) {
-          break;
-        }
-
-        sendReleaseMessage(message);
-      }
-    });
-  }
-
-  private static class TestBizConfig extends BizConfig {
-    @Override
-    public int appNamespaceCacheScanInterval() {
-      return 50;
-    }
-
-    @Override
-    public TimeUnit appNamespaceCacheScanIntervalTimeUnit() {
-      return TimeUnit.MILLISECONDS;
-    }
-  }
+		@Override
+		public TimeUnit appNamespaceCacheScanIntervalTimeUnit() {
+			return TimeUnit.MILLISECONDS;
+		}
+	}
 }

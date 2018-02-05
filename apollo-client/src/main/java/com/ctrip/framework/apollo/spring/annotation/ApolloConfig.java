@@ -11,9 +11,12 @@ import com.ctrip.framework.apollo.core.ConfigConsts;
 /**
  * Use this annotation to inject Apollo Config Instance.
  *
- * <p>Usage example:</p>
+ * <p>
+ * Usage example:
+ * </p>
+ * 
  * <pre class="code">
- * //Inject the config for "someNamespace"
+ * // Inject the config for "someNamespace"
  * &#064;ApolloConfig("someNamespace")
  * private Config config;
  * </pre>
@@ -24,8 +27,8 @@ import com.ctrip.framework.apollo.core.ConfigConsts;
 @Target(ElementType.FIELD)
 @Documented
 public @interface ApolloConfig {
-  /**
-   * Apollo namespace for the config, if not specified then default to application
-   */
-  String value() default ConfigConsts.NAMESPACE_APPLICATION;
+	/**
+	 * Apollo namespace for the config, if not specified then default to application
+	 */
+	String value() default ConfigConsts.NAMESPACE_APPLICATION;
 }
