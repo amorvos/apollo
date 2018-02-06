@@ -19,23 +19,28 @@ public class RestTemplateFactory implements FactoryBean<RestTemplate>, Initializ
 
 	@Autowired
 	private HttpMessageConverters httpMessageConverters;
+
 	@Autowired
 	private PortalConfig portalConfig;
 
 	private RestTemplate restTemplate;
 
+	@Override
 	public RestTemplate getObject() {
 		return restTemplate;
 	}
 
+	@Override
 	public Class<RestTemplate> getObjectType() {
 		return RestTemplate.class;
 	}
 
+	@Override
 	public boolean isSingleton() {
 		return true;
 	}
 
+	@Override
 	public void afterPropertiesSet() throws UnsupportedEncodingException {
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 

@@ -13,6 +13,7 @@ import com.ctrip.framework.apollo.portal.spi.defaultimpl.DefaultRolePermissionSe
  */
 @Configuration
 public class RoleConfiguration {
+
 	@Bean
 	public RoleInitializationService roleInitializationService() {
 		return new DefaultRoleInitializationService();

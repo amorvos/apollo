@@ -41,8 +41,8 @@ public class ReleaseService {
 	private AdminServiceAPI.ReleaseAPI releaseAPI;
 
 	public ReleaseDTO publish(NamespaceReleaseModel model) {
-		Env env = model.getEnv();
-		boolean isEmergencyPublish = model.isEmergencyPublish();
+		Env env = Env.valueOf(model.getEnv());
+		boolean isEmergencyPublish = model.getIsEmergencyPublish();
 		String appId = model.getAppId();
 		String clusterName = model.getClusterName();
 		String namespaceName = model.getNamespaceName();

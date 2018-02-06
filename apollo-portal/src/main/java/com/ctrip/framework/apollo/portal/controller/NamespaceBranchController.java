@@ -77,12 +77,12 @@ public class NamespaceBranchController {
 			@RequestParam(value = "deleteBranch", defaultValue = "true") boolean deleteBranch,
 			@RequestBody NamespaceReleaseModel model) {
 
-		if (model.isEmergencyPublish() && !portalConfig.isEmergencyPublishAllowed(Env.fromString(env))) {
+		if (model.getIsEmergencyPublish() && !portalConfig.isEmergencyPublishAllowed(Env.fromString(env))) {
 			throw new BadRequestException(String.format("Env: %s is not supported emergency publish now", env));
 		}
 
 		ReleaseDTO createdRelease = namespaceBranchService.merge(appId, Env.valueOf(env), clusterName, namespaceName,
-				branchName, model.getReleaseTitle(), model.getReleaseComment(), model.isEmergencyPublish(),
+				branchName, model.getReleaseTitle(), model.getReleaseComment(), model.getIsEmergencyPublish(),
 				deleteBranch);
 
 		ConfigPublishEvent event = ConfigPublishEvent.instance();

@@ -32,6 +32,7 @@ public class BizConfig extends RefreshableConfig {
 	private static final Type namespaceValueLengthOverrideTypeReference = new TypeToken<Map<Long, Integer>>() {
 	}.getType();
 	private Gson gson = new Gson();
+
 	@Autowired
 	private BizDBPropertySource propertySource;
 

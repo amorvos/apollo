@@ -1,6 +1,7 @@
 package com.ctrip.framework.apollo.portal.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -9,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -103,7 +105,7 @@ public class NamespaceServiceTest extends AbstractUnitTest {
 		NamespaceBO namespaceVO = namespaceVOs.get(0);
 		assertEquals(4, namespaceVO.getItems().size());
 		assertEquals("a", namespaceVO.getItems().get(0).getItem().getKey());
-		assertEquals(2, namespaceVO.getItemModifiedCnt());
+		assertTrue(Objects.equals(2, namespaceVO.getItemModifiedCnt()));
 		assertEquals(testAppId, namespaceVO.getBaseInfo().getAppId());
 		assertEquals(testClusterName, namespaceVO.getBaseInfo().getClusterName());
 		assertEquals(testNamespaceName, namespaceVO.getBaseInfo().getNamespaceName());

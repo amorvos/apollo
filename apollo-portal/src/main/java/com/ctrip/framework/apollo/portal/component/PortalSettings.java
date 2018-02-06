@@ -39,7 +39,6 @@ public class PortalSettings {
 
 	private List<Env> allEnvs = new ArrayList<>();
 
-	// mark env up or down
 	private Map<Env, Boolean> envStatusMark = new ConcurrentHashMap<>();
 
 	@PostConstruct

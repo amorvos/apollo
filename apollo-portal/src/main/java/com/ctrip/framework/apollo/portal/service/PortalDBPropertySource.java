@@ -13,11 +13,9 @@ import com.ctrip.framework.apollo.portal.entity.po.ServerConfig;
 import com.ctrip.framework.apollo.portal.repository.ServerConfigRepository;
 import com.google.common.collect.Maps;
 
-/**
- * @author Jason Song(song_s@ctrip.com)
- */
 @Component
 public class PortalDBPropertySource extends RefreshablePropertySource {
+
 	private static final Logger logger = LoggerFactory.getLogger(PortalDBPropertySource.class);
 
 	@Autowired

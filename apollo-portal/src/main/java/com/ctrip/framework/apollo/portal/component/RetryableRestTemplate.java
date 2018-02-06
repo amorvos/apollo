@@ -42,6 +42,7 @@ public class RetryableRestTemplate {
 
 	@Autowired
 	private RestTemplateFactory restTemplateFactory;
+
 	@Autowired
 	private AdminServiceAddressLocator adminServiceAddressLocator;
 

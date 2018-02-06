@@ -3,10 +3,12 @@ package com.ctrip.framework.apollo.common.config;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,16 +24,17 @@ public abstract class RefreshableConfig {
 
 	private static final Logger logger = LoggerFactory.getLogger(RefreshableConfig.class);
 
-	private static final String LIST_SEPARATOR = ",";
+	protected Splitter splitter = Splitter.on(LIST_SEPARATOR).omitEmptyStrings().trimResults();
+
+	private List<RefreshablePropertySource> propertySources;
+
 	// TimeUnit: second
 	private static final int CONFIG_REFRESH_INTERVAL = 60;
 
-	protected Splitter splitter = Splitter.on(LIST_SEPARATOR).omitEmptyStrings().trimResults();
+	private static final String LIST_SEPARATOR = ",";
 
 	@Autowired
 	private ConfigurableEnvironment environment;
-
-	private List<RefreshablePropertySource> propertySources;
 
 	/**
 	 * register refreshable property source. Notice: The front property source has
@@ -54,8 +57,8 @@ public abstract class RefreshableConfig {
 		}
 
 		// task to update configs
-		ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1,
-				ApolloThreadFactory.create("ConfigRefresher", true));
+		ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1,
+				new BasicThreadFactory.Builder().namingPattern("config-refresher-%d").daemon(true).build());
 
 		executorService.scheduleWithFixedDelay(() -> {
 			try {

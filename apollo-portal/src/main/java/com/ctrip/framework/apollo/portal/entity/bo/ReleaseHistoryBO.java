@@ -6,9 +6,16 @@ import java.util.Map;
 
 import com.ctrip.framework.apollo.common.entity.EntityPair;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
 public class ReleaseHistoryBO {
 
-	private long id;
+	private Long id;
 
 	private String appId;
 
@@ -20,7 +27,7 @@ public class ReleaseHistoryBO {
 
 	private String operator;
 
-	private long releaseId;
+	private Long releaseId;
 
 	private String releaseTitle;
 
@@ -32,129 +39,9 @@ public class ReleaseHistoryBO {
 
 	private List<EntityPair<String>> configuration;
 
-	private long previousReleaseId;
+	private Long previousReleaseId;
 
-	private int operation;
+	private Integer operation;
 
 	private Map<String, Object> operationContext;
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public String getAppId() {
-		return appId;
-	}
-
-	public void setAppId(String appId) {
-		this.appId = appId;
-	}
-
-	public String getClusterName() {
-		return clusterName;
-	}
-
-	public void setClusterName(String clusterName) {
-		this.clusterName = clusterName;
-	}
-
-	public String getNamespaceName() {
-		return namespaceName;
-	}
-
-	public void setNamespaceName(String namespaceName) {
-		this.namespaceName = namespaceName;
-	}
-
-	public String getBranchName() {
-		return branchName;
-	}
-
-	public void setBranchName(String branchName) {
-		this.branchName = branchName;
-	}
-
-	public long getReleaseId() {
-		return releaseId;
-	}
-
-	public void setReleaseId(long releaseId) {
-		this.releaseId = releaseId;
-	}
-
-	public long getPreviousReleaseId() {
-		return previousReleaseId;
-	}
-
-	public void setPreviousReleaseId(long previousReleaseId) {
-		this.previousReleaseId = previousReleaseId;
-	}
-
-	public int getOperation() {
-		return operation;
-	}
-
-	public void setOperation(int operation) {
-		this.operation = operation;
-	}
-
-	public Map<String, Object> getOperationContext() {
-		return operationContext;
-	}
-
-	public void setOperationContext(Map<String, Object> operationContext) {
-		this.operationContext = operationContext;
-	}
-
-	public String getOperator() {
-		return operator;
-	}
-
-	public void setOperator(String operator) {
-		this.operator = operator;
-	}
-
-	public String getReleaseTitle() {
-		return releaseTitle;
-	}
-
-	public void setReleaseTitle(String releaseTitle) {
-		this.releaseTitle = releaseTitle;
-	}
-
-	public String getReleaseComment() {
-		return releaseComment;
-	}
-
-	public void setReleaseComment(String releaseComment) {
-		this.releaseComment = releaseComment;
-	}
-
-	public Date getReleaseTime() {
-		return releaseTime;
-	}
-
-	public void setReleaseTime(Date releaseTime) {
-		this.releaseTime = releaseTime;
-	}
-
-	public String getReleaseTimeFormatted() {
-		return releaseTimeFormatted;
-	}
-
-	public void setReleaseTimeFormatted(String releaseTimeFormatted) {
-		this.releaseTimeFormatted = releaseTimeFormatted;
-	}
-
-	public List<EntityPair<String>> getConfiguration() {
-		return configuration;
-	}
-
-	public void setConfiguration(List<EntityPair<String>> configuration) {
-		this.configuration = configuration;
-	}
 }

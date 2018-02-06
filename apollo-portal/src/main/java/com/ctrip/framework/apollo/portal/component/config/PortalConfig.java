@@ -26,6 +26,7 @@ public class PortalConfig extends RefreshableConfig {
 	private static final Type ORGANIZATION = new TypeToken<List<Organization>>() {
 	}.getType();
 	private Gson gson = new Gson();
+
 	@Autowired
 	private PortalDBPropertySource portalDBPropertySource;
 

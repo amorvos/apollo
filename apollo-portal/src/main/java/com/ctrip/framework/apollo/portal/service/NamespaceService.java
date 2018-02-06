@@ -206,7 +206,7 @@ public class NamespaceService {
 
 			ItemBO itemBO = transformItem2BO(itemDTO, releaseItems);
 
-			if (itemBO.isModified()) {
+			if (itemBO.getIsModified()) {
 				modifiedItemCnt++;
 			}
 
@@ -246,7 +246,7 @@ public class NamespaceService {
 			namespace.setComment(appNamespace.getComment());
 		}
 		namespace.setFormat(format);
-		namespace.setPublic(isPublic);
+		namespace.setIsPublic(isPublic);
 	}
 
 	private List<ItemBO> parseDeletedItems(List<ItemDTO> newItems, Map<String, String> releaseItems) {
@@ -258,14 +258,14 @@ public class NamespaceService {
 			if (newItemMap.get(key) == null) {
 				ItemBO deletedItem = new ItemBO();
 
-				deletedItem.setDeleted(true);
+				deletedItem.setIsDeleted(true);
 				ItemDTO deletedItemDto = new ItemDTO();
 				deletedItemDto.setKey(key);
 				String oldValue = entry.getValue();
 				deletedItem.setItem(deletedItemDto);
 
 				deletedItemDto.setValue(oldValue);
-				deletedItem.setModified(true);
+				deletedItem.setIsModified(true);
 				deletedItem.setOldValue(oldValue);
 				deletedItem.setNewValue("");
 				deletedItems.add(deletedItem);
@@ -282,7 +282,7 @@ public class NamespaceService {
 		String oldValue = releaseItems.get(key);
 		// new item or modified
 		if (!StringUtils.isEmpty(key) && (oldValue == null || !newValue.equals(oldValue))) {
-			itemBO.setModified(true);
+			itemBO.setIsModified(true);
 			itemBO.setOldValue(oldValue == null ? "" : oldValue);
 			itemBO.setNewValue(newValue);
 		}
