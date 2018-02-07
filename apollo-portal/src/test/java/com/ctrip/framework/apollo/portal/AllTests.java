@@ -16,7 +16,6 @@ import com.ctrip.framework.apollo.portal.service.AppNamespaceServiceTest;
 import com.ctrip.framework.apollo.portal.service.ConfigServiceTest;
 import com.ctrip.framework.apollo.portal.service.FavoriteServiceTest;
 import com.ctrip.framework.apollo.portal.service.NamespaceServiceTest;
-import com.ctrip.framework.apollo.portal.spi.ctrip.CtripUserServiceTest;
 import com.ctrip.framework.apollo.portal.spi.defaultImpl.RoleInitializationServiceTest;
 import com.ctrip.framework.apollo.portal.spi.defaultImpl.RolePermissionServiceTest;
 
@@ -25,8 +24,7 @@ import com.ctrip.framework.apollo.portal.spi.defaultImpl.RolePermissionServiceTe
 		ServiceExceptionTest.class, RolePermissionServiceTest.class, AppNamespaceServiceTest.class,
 		RoleInitializationServiceTest.class, FileTextResolverTest.class, RetryableRestTemplateTest.class,
 		ConsumerRolePermissionServiceTest.class, ConsumerAuthenticationFilterTest.class, ConsumerAuthUtilTest.class,
-		ConsumerServiceTest.class, ConsumerAuditUtilTest.class, ConfigTest.class, FavoriteServiceTest.class,
-		CtripUserServiceTest.class
+		ConsumerServiceTest.class, ConsumerAuditUtilTest.class, ConfigTest.class, FavoriteServiceTest.class
 
 })
 public class AllTests {

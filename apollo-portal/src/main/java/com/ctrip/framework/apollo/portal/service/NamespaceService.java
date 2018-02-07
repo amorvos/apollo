@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -278,6 +279,8 @@ public class NamespaceService {
 		String key = itemDTO.getKey();
 		ItemBO itemBO = new ItemBO();
 		itemBO.setItem(itemDTO);
+		itemBO.setIsModified(Boolean.FALSE);
+		itemBO.setIsDeleted(Boolean.FALSE);
 		String newValue = itemDTO.getValue();
 		String oldValue = releaseItems.get(key);
 		// new item or modified

@@ -18,7 +18,6 @@ public class PageSettingController {
 	public PageSetting getPageSetting() {
 		PageSetting setting = new PageSetting();
 
-		setting.setWikiAddress(portalConfig.wikiAddress());
 		setting.setCanAppAdminCreatePrivateNamespace(portalConfig.canAppAdminCreatePrivateNamespace());
 
 		return setting;
